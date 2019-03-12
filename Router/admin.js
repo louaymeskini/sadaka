@@ -8,6 +8,16 @@ Router.get("/",function (req,res) {
     res.send("c bn")
 })
 
+// une seul admin
+Router.get("/:id",validateUser, function (req,res) {
+  adminModel.findOne({_id:req.params.id}, function (err,result) {
+    if(err)
+      res.send({"state":"not ok","msg":"err:"+err});
+    else
+      res.send(result);
+  })
+})
+
 //register admin
 Router.post("/ajouter", function (req,res) {
     admin = new adminModel({nom: req.body.nom, prenom: req.body.prenom,

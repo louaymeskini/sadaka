@@ -28,14 +28,19 @@ class Login extends Component {
         password:this.state.password
       }).then(res=>{
         console.log(res.data)
-        window.location.href="/#/home/association"
-        /*if(res.data === ""){
+
+        if(res.data['data'] === null){
           alert("password or email are incorrect")
         }
         else
         {
-          window.location.href="/home";
-        }*/
+          console.log("token ", res.data['data']['token']);
+          console.log("id admin ", res.data['data']['user']['_id']);
+         // console.log("token ", res.data['data']['user']);
+          localStorage.setItem("token",res.data['data']['token']);
+        localStorage.setItem("idAdmin",res.data['data']['user']['_id']);
+        window.location.href="/#/home/association";
+        }
       })
     }
     this.setState({email:""})

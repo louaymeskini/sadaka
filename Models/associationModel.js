@@ -6,7 +6,11 @@ var Schema = mongoose.Schema;
 
 
 var associationModelSchema = new Schema({
-        nom: {
+      imageAssociation:{
+        type: String,
+        required: true,
+      },
+      nom: {
             type: String,
             trim: true,
             required: true,

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 
-class association extends Component {
+class benevole extends Component {
 
   constructor(){
     super();
     this.state={
-      associations:[]
+      benevoles:[]
     }
   }
 
@@ -16,15 +16,15 @@ class association extends Component {
 
   getAll(){
     console.log("token ",localStorage.getItem("token"));
-const headers={
-  "content-type":"application/json",
-  'x-access-token':localStorage.getItem("token")
-}
-    fetch("http://localhost:8000/association/all", {method: 'GET',headers:headers })
+    const headers={
+      "content-type":"application/json",
+      'x-access-token':localStorage.getItem("token")
+    }
+    fetch("http://localhost:8000/benevole/all", {method: 'GET',headers:headers })
       .then(response => response.json())
       .then(data =>{
         console.log(data);
-        this.setState({associations:data})
+        this.setState({benevoles:data})
       })
   }
 
@@ -35,12 +35,12 @@ const headers={
       "content-type":"application/json",
       "x-access-token":localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/supprimer/"+id, {method: 'DELETE', headers:headers})
+    fetch("http://127.0.0.1:8000/benevole/supprimer/"+id, {method: 'DELETE', headers:headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
         if (data['state']==="non"){
-          alert("Association n est pas supprime");
+          alert("benevole n est pas supprime");
         }
         else{
           alert("suppression effectue");
@@ -53,7 +53,7 @@ const headers={
     e.preventDefault();
     console.log("id: ",id);
     localStorage.setItem("id",id);
-    window.location.href="/#/home/association/modifier";
+    window.location.href="/#/home/benevole/modifier";
   }
 
   render() {
@@ -65,29 +65,31 @@ const headers={
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Liste des associations
+                <i className="fa fa-align-justify"></i> Liste des Benevoles
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead>
                   <tr>
-                    <th>Logo Association</th>
-                    <th>Nom Association</th>
+                    <th>Nom Benevole</th>
+                    <th>Prenom</th>
+                    <th>Sexe</th>
                     <th>Ville</th>
                     <th>Adresse</th>
                     <th>Code Postale</th>
                     <th>Telephone</th>
                     <th>Email</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Remove</th>
+                    <th scope="col">Modifier</th>
+                    <th scope="col">Supprimer</th>
                   </tr>
                   </thead>
                   <tbody>
                   {
-                    this.state.associations.map((item)=>
-                  <tr key={item.id}>
-                    <td><img src={'http://127.0.0.1:8000/association/img/'+item.imageAssociation} width="50" height="50"/></td>
+                    this.state.benevoles.map((item)=>
+                  <tr>
                     <td>{item.nom}</td>
+                    <td>{item.prenom}</td>
+                    <td>{item.sexe}</td>
                     <td>{item.ville}</td>
                     <td>{item.adresse}</td>
                     <td>{item.codePostale}</td>
@@ -122,4 +124,4 @@ const headers={
   }
 }
 
-export default association;
+export default benevole;

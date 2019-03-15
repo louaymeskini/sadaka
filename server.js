@@ -1,6 +1,9 @@
 var express=require("express")
 var cors=require("cors")
+var fs=require("fs")
+var multer=require("multer")
 var bodyParser = require('body-parser')
+const upload = multer({dest: __dirname + '/uploads/images'});
 
 var admin=require("./Router/admin")
 var benevole=require("./Router/benevole")
@@ -12,7 +15,8 @@ var don=require("./Router/don")
 var db=require("./Models/db")
 var app=express()
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false,limit: "50mb", parameterLimit:50000 }))
+//app.use('/uploads', express.static('uploads'));  ,limit: "50mb", parameterLimit:50000
 
 // parse application/json
 app.use(bodyParser.json())
@@ -24,6 +28,8 @@ app.use("/association",association)
 app.use("/evenement",evenement)
 app.use("/annonce",annonce)
 app.use("/don",don)
+
+
 
 app.listen(8000,function () {
     console.log("Connected to port 8000")

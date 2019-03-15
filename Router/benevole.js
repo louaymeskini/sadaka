@@ -5,6 +5,7 @@ var benevoleModel = require('../Models/benevoleModel')
 var associationModel = require('../Models/associationModel')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const saltRounds = 10;
 
 //test
 Router.get("/", function (req, res) {
@@ -61,7 +62,7 @@ Router.put("/modifier/:id", function (req, res) {
         nom: req.body.nom, prenom: req.body.prenom,
         sexe: req.body.sexe, ville: req.body.ville, adresse: req.body.adresse,
         codePostale: req.body.codePostale, tel: req.body.tel,
-        email: req.body.email, username: req.body.username, password: req.body.password,
+        email: req.body.email, username: req.body.username, password: bcrypt.hashSync(req.body.password,saltRounds),
         associations: req.body.associations, evenements: req.body.evenements,
         annonces: req.body.annonces}, function (err) {
         if (err)

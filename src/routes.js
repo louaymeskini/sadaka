@@ -38,10 +38,14 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 const association = React.lazy(() => import('./views/association/association'));
 const AjouterAssociation = React.lazy(() => import('./views/association/AjouterAssociation/AjouterAssociation'));
+const ModifierAssociation = React.lazy(() => import('./views/association/ModifierAssociation/ModifierAssociation'));
+const benevole = React.lazy(() => import('./views/benevole/benevole'));
+const ModifierBenevole = React.lazy(() => import('./views/benevole/ModifierBenevole/ModifierBenevole'));
+const ModifierAdmin = React.lazy(() => import('./views/admin/ModifierAdmin'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: '/', exact: true, name: 'Home', component: DefaultLayout },
+  { path: '/', exact: true, component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
@@ -83,7 +87,12 @@ const routes = [
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/home/association', exact: true, name: 'Liste Associations', component: association },
-  { path: '/home/association/ajouter', exact: true, name: 'Ajouter Association', component: AjouterAssociation }
+  { path: '/home/association/ajouter', exact: true, name: 'Ajouter Association', component: AjouterAssociation },
+  { path: '/home/association/modifier', exact: true, name: 'Modifier Association', component: ModifierAssociation },
+  { path: '/home/benevole', exact: true, name: 'Liste Benevoles', component: benevole },
+  { path: '/home/benevole/modifier', exact: true, name: 'Modifier Benevole', component: ModifierBenevole },
+  { path: '/home/admin/modifier', exact: true, name: 'Modifier Administrateur', component: ModifierAdmin }
+
 ];
 
 export default routes;

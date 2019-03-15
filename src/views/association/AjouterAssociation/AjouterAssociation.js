@@ -27,6 +27,7 @@ import {
 } from 'reactstrap';
 
 class AjouterAssociation extends Component {
+
   constructor(props) {
     super(props);
 
@@ -43,48 +44,74 @@ class AjouterAssociation extends Component {
       password:"",
       collapse: true,
       fadeIn: true,
-      timeout: 300
+      timeout: 300,
+      file:File
     };
   }
 
-  register(){
-    console.log("state: ",this.state)
-    if (this.state.nom === "" && this.state.ville===""&& this.state.adresse===""&&
-      this.state.codePostale===""&& this.state.tel===""&& this.state.email===""&&
-      this.state.username===""&& this.state.password==="")
+  fileChangeHandler =(e)=>{
+    const file=e.target.files[0];
+    console.log("file ",file);
+
+    this.setState({file:file});
+  }
+  componentDidMount(){
+    console.log("okk did");
+  }
+
+  handlesubmit(){
+
+console.log("okkkkkkk");
+    console.log("state: ",this.state);
+   console.log("token ",localStorage.getItem("token"));
+
+    const nom =this.state.nom;
+    const ville =this.state.ville;
+    const codePostale =this.state.codePostale;
+    const adresse =this.state.adresse;
+    const tel =this.state.tel;
+    const username =this.state.username;
+    const password =this.state.password;
+    const email =this.state.email;
+
+
+    if (nom === ""||ville===""||adresse===""||
+      codePostale===""||tel===""|| email===""||
+      username===""|| password==="")
     {
       alert("no data");
     }
     else
     {
-      axios.post("http://127.0.0.1:8000/association/ajouter", {
-        nom:this.state.nom,
-        ville:this.state.ville,
-        adresse:this.state.adresse,
-        codePostale:this.state.codePostale,
-        tel:this.state.tel,
-        email:this.state.email,
-        username:this.state.username,
-        password:this.state.password
-      }).then(res=>{
+      const headers={
+        'x-access-token':localStorage.getItem("token")
+      }
+
+
+      const data={
+        nom,adresse,ville,codePostale,tel,email,username,password
+      }
+      console.log("name ",this.state.file.name);
+
+      const  formData= new FormData();
+    formData.append("imageAssociation",this.state.file);
+      formData.append("nom",nom);
+      formData.append("adresse",adresse);
+      formData.append("ville",ville);
+      formData.append("codePostale",codePostale);
+      formData.append("tel",tel);
+      formData.append("email",email);
+      formData.append("username",username);
+      formData.append("password",password);
+
+      axios.post("http://127.0.0.1:8000/association/ajouter",formData,{headers: headers})
+        .then(res=>{
         console.log(res.data)
-        if(res.data === ""){
-          alert("vous devez remplisser tous les champs")
-        }
-        else
-        {
+
           window.location.href="/#/home/association";
-        }
+
       })
     }
-    this.setState({nom:""})
-    this.setState({ville:""})
-    this.setState({adresse:""})
-    this.setState({codePostale:""})
-    this.setState({tel:""})
-    this.setState({email:""})
-    this.setState({username:""})
-    this.setState({password:""})
 
   }
 
@@ -101,14 +128,21 @@ class AjouterAssociation extends Component {
       <div className="animated fadeIn">
         <Row>
 
-          <Col xs="12" sm="6">
+          <Col xs="12" sm="12">
             <Card>
+
               <CardHeader>
                 <small>Ajouter</small>
                 <strong> Association</strong>
-
               </CardHeader>
+
               <CardBody>
+                <FormGroup>
+                  <Label htmlFor="imgAsso">Logo Association</Label>
+                  <Input type="file" id="imgAsso"
+                         onChange={this.fileChangeHandler}/>
+                </FormGroup>
+
                 <FormGroup>
                   <Label htmlFor="company">Nom Association</Label>
                   <Input type="text" id="company" placeholder="Entrer le nom association"
@@ -157,7 +191,7 @@ class AjouterAssociation extends Component {
                 </FormGroup>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary" onClick={this.register.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="submit" size="sm" color="primary" onClick={this.handlesubmit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
             </Card>

@@ -3,6 +3,7 @@ var Router=express.Router()
 var adminModel = require('../Models/adminModel')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const saltRounds = 10;
 
 Router.get("/",function (req,res) {
     res.send("c bn")
@@ -36,7 +37,7 @@ Router.post("/ajouter", function (req,res) {
 //modifier admin
 Router.put("/modifier/:id", validateUser, function (req,res) {
     adminModel.updateOne({_id:req.params.id}, {nom: req.body.nom, prenom: req.body.prenom,
-        email: req.body.email, username: req.body.username, password: req.body.password}, function (err) {
+        email: req.body.email, username: req.body.username, password: bcrypt.hashSync(req.body.password,saltRounds)}, function (err) {
         if(err)
             res.send({"state":"not ok","msg":"err:"+err});
         else

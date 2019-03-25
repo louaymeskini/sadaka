@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+var user= require("./userModel")
 
 var Schema = mongoose.Schema;
 
 
-var associationModelSchema = new Schema({
+var associationModelSchema = user.discriminator("association", new Schema({
       imageAssociation:{
         type: String,
         required: true,
@@ -35,24 +36,9 @@ var associationModelSchema = new Schema({
             trim: true,
             required: true,
         },
-        email: {
-            type: String,
-            trim: true,
-            required: true,
-        },
-        username: {
-            type: String,
-            trim: true,
-            required: true,
-        },
-        password: {
-            type: String,
-            trim: true,
-            required: true,
-        },
         benevoles:[
             {
-                type: Schema.Types.ObjectId, ref:"benevoleModel"
+                type: Schema.Types.ObjectId, ref:"benevole"
             }
         ],
         annonces:[
@@ -73,25 +59,9 @@ var associationModelSchema = new Schema({
     },
     {
         timestamps: true
-    });
+    }));
 
-associationModelSchema.pre('save', function (next) {
-    this.password = bcrypt.hashSync(this.password, saltRounds);
-    next();
-
-    /*this.benevole.push({
-        _id: { $in : associationModelSchema.benevole}
-    }).toArray();*/
-
-
-    /*associationModel.findOne({_id: this.benevole.association}).exec((error, item) => {
-        item.benevole.push(associationModel.benevole);
-        //item.save(()=>{next();});
-        item.save();
-});*/
-
-})
 
 // Compile model from schema
-var associationModel = mongoose.model('associationModel', associationModelSchema );
+var associationModel = mongoose.model('association');
 module.exports=associationModel;

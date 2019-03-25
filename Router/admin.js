@@ -9,6 +9,12 @@ Router.get("/",function (req,res) {
     res.send("c bn")
 })
 
+Router.get("/all", function (req,res) {
+  adminModel.find({}, function (err, result) {
+    res.send(result);
+  })
+})
+
 // une seul admin
 Router.get("/:id",validateUser, function (req,res) {
   adminModel.findOne({_id:req.params.id}, function (err,result) {
@@ -21,7 +27,7 @@ Router.get("/:id",validateUser, function (req,res) {
 
 //register admin
 Router.post("/ajouter", function (req,res) {
-    admin = new adminModel({nom: req.body.nom, prenom: req.body.prenom,
+    var admin = new adminModel({nom: req.body.nom, prenom: req.body.prenom,
         email: req.body.email, username: req.body.username, password: req.body.password});
 
     admin.save(function (err) {
@@ -58,27 +64,27 @@ Router.delete("/supprimer/:id", function (req,res) {
 
 //adminModel.findOne({ $or: [{email: req.body.email}, {username: req.body.username}]}, function (err, userInfo) {
 //authentification admin
-Router.post("/auth", function (req,res) {
-    adminModel.findOne({ $or: [{email: req.body.email}, {username: req.body.username}]}, function (err, userInfo) {
-        try {
-            if (err) {
-                next(err);
-            }
-            else {
-                if (bcrypt.compareSync(req.body.password, userInfo.password)) {
-                    const token = jwt.sign({id: userInfo._id}, req.app.get('secretKey'), {expiresIn: '1h'});
-                    res.json({status: "success", message: "user found!!!", data: {user: userInfo, token: token}});
-                }
-                else {
-                    res.json({status: "error", message: "Invalid email/password!!!", data: null});
-                }
-            }
-        }
-        catch (err) {
-            res.json({status: "error", message: "Invalid email/password!!!", data: null});
-        }
-    })
-})
+// Router.post("/auth", function (req,res) {
+//     adminModel.findOne({ $or: [{email: req.body.email}, {username: req.body.username}]}, function (err, userInfo) {
+//         try {
+//             if (err) {
+//                 next(err);
+//             }
+//             else {
+//                 if (bcrypt.compareSync(req.body.password, userInfo.password)) {
+//                     const token = jwt.sign({id: userInfo._id}, req.app.get('secretKey'), {expiresIn: '1h'});
+//                     res.json({status: "success", message: "user found!!!", data: {user: userInfo, token: token}});
+//                 }
+//                 else {
+//                     res.json({status: "error", message: "Invalid email/password!!!", data: null});
+//                 }
+//             }
+//         }
+//         catch (err) {
+//             res.json({status: "error", message: "Invalid email/password!!!", data: null});
+//         }
+//     })
+// })
 
 function validateUser(req, res, next) {
     jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {

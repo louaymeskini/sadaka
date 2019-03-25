@@ -71,7 +71,7 @@ class ModifierAssociation extends Component {
       "content-type":"application/json",
       'x-access-token':localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/"+localStorage.getItem("id"), {method: 'GET', headers: headers})
+    fetch("http://127.0.0.1:8000/association/"+localStorage.getItem("idAssociation"), {method: 'GET', headers: headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -81,23 +81,26 @@ class ModifierAssociation extends Component {
       })
   }
 
-  fileChangeHandler =(e)=>{
-    const file=e.target.files[0];
-    console.log("file ",file);
-try {
-  this.setState({file:file})
-  this.setState({imageAssociation: file.name});
-}catch (Ex) {
-  this.setState({imageAssociation: this.state.association.imageAssociation});
-}
+  fileChangedHandler = (event) => {
+
+    const file = event.target.files[0];
+
+    this.state.file = file;
+
+    try{
+      this.setState({imageAssociation: file.name});
+    }
+    catch(Ex){
+      this.setState({imageAssociation: this.state.association.imageAssociation});
+    }
+
+    console.log("vide",file)
+
   }
 
   handleEdit(){
-   // console.log("state: ",this.state)
-    const headers={
-      "content-type":"application/json",
-      'x-access-token':localStorage.getItem("token")
-    }
+    // console.log("state: ",this.state)
+
     if (this.state.nom === "")
     {
       this.state.nom=this.state.association.nom;
@@ -130,61 +133,74 @@ try {
     {
       this.state.password=this.state.association.password;
     }
-    else
-    {
-      const headers={
-        'x-access-token':localStorage.getItem("token")
+
+    else if ((this.state.password != "") && (this.state.password === this.state.confirmedpassword)){
+
+      const options = {
+        method: 'put',
+
+        headers: {
+          "Content-type": "application/json",
+          'x-access-token':localStorage.getItem("token")
+        },
+
+
+        body: JSON.stringify({
+
+          "nom": "" + this.state.nom + "",
+          "adresse": "" + this.state.adresse + "",
+          "ville": "" + this.state.ville + "",
+          "codePostale": "" + this.state.codePostale + "",
+          "email": "" + this.state.email + "",
+          "tel": "" + this.state.tel + "",
+          "username": "" + this.state.username + "",
+          "password": "" + this.state.password + "",
+          //   "imageAssociation": "" + this.state.imageAssociation + "",
+        })
       }
 
 
-      const nom =this.state.nom;
-      const ville =this.state.ville;
-      const codePostale =this.state.codePostale;
-      const adresse =this.state.adresse;
-      const tel =this.state.tel;
-      const username =this.state.username;
-      const password =this.state.password;
-      const email =this.state.email;
+      fetch("http://127.0.0.1:8000/association/modifier/"+localStorage.getItem("idAssociation"), options)
+
+        .then(response => response.json())
+
+        .then(data => {
 
 
-      const  formData= new FormData();
-if (this.state.file != File){
-  formData.append("imageAssociation",this.state.file);
+          console.log("name ",this.state.file.name);
 
-}
-else {
-  formData.append("imageAssociation", this.state.imageAssociation);
-}
-      formData.append("nom",nom);
-      formData.append("adresse",adresse);
-      formData.append("ville",ville);
-      formData.append("codePostale",codePostale);
-      formData.append("tel",tel);
-      formData.append("email",email);
-      formData.append("username",username);
-      formData.append("password",password);
+          const formData = new FormData();
 
-      axios.put("http://127.0.0.1:8000/association/modifier/"+localStorage.getItem("id"),formData,{headers: headers}).then(res=>{
-        console.log(res.data)
-        if(res.data === ""){
-          alert("password or email are incorrect")
-        }
-        else
-        {
-          alert("okkkkkkk")
-          window.location.href="/#/home/association";
-        }
-      })
+          //formData.append('file', this.state.file)
+          formData.append('imageAssociation', this.state.file)
+
+
+          const config = {
+
+            headers: {
+              'x-access-token':localStorage.getItem("token")
+            }
+          }
+
+
+          if(this.state.file.name != "File") {
+
+            axios.put("http://127.0.0.1:8000/association/modifier/"+localStorage.getItem("idAssociation")+"/imageassociation", formData, config)
+
+              .then(function (response) {
+                console.log('saved successfully')
+              });
+
+          }
+          console.log("data", data);
+          //window.location.href="/#/home/benevole/membre";
+
+        })
     }
-    /*this.setState({nom:""})
-    this.setState({ville:""})
-    this.setState({codePostale:""})
-    this.setState({adresse:""})
-    this.setState({tel:""})
-    this.setState({email:""})
-    this.setState({username:""})
-    this.setState({password:""})*/
-
+    else
+    {
+      alert("confirmer votre password");
+    }
   }
 
   toggle() {
@@ -217,7 +233,7 @@ else {
                   <Col xs="12" sm="9">
 
                   <Input type="file" id="imgAsso"
-                         onChange={this.fileChangeHandler}/>
+                         onChange={this.fileChangedHandler}/>
                   </Col>
                   </Row>
                 </FormGroup>
@@ -264,8 +280,13 @@ else {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="hf-password">Mot De Passe Association</Label>
-                  <Input type="password" id="hf-password" name="hf-password" placeholder={this.state.association.password} autoComplete="current-password"
+                  <Input type="password" id="hf-password" name="hf-password" placeholder="Mot de Passe" autoComplete="current-password"
                          onChange={evt=> this.setState({password: evt.target.value})} />
+                </FormGroup>
+                <FormGroup>
+                  <Label htmlFor="hf-password2">Confirmed Mot De Passe</Label>
+                  <Input type="password" id="hf-password2" name="hf-password2" placeholder="Confirmer votre mot de passe" autoComplete="current-password"
+                         onChange={evt=> this.setState({confirmedpassword: evt.target.value})} />
                 </FormGroup>
               </CardBody>
               <CardFooter>

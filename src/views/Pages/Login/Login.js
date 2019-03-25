@@ -23,7 +23,7 @@ class Login extends Component {
     }
     else
     {
-      axios.post("http://localhost:8000/admin/auth", {
+      axios.post("http://localhost:8000/auth", {
         email:this.state.email,
         password:this.state.password
       }).then(res=>{
@@ -38,8 +38,24 @@ class Login extends Component {
           console.log("id admin ", res.data['data']['user']['_id']);
          // console.log("token ", res.data['data']['user']);
           localStorage.setItem("token",res.data['data']['token']);
-        localStorage.setItem("idAdmin",res.data['data']['user']['_id']);
-        window.location.href="/#/home/association";
+        localStorage.setItem("type",res.data['data']['user']['type']);
+
+        if(localStorage.getItem("type")==="admin"){
+
+          localStorage.setItem("idAdmin",res.data['data']['user']['_id']);
+
+          window.location.href="/#/home/association";
+
+        }
+        else if(localStorage.getItem("type")==="association"){
+          localStorage.setItem("idAssociation",res.data['data']['user']['_id']);
+          console.log("id association: ",localStorage.getItem("idAssociation"));
+          window.location.href="/#/home/benevole/membre";
+
+        }
+        else{
+          alert("votre incorrect");
+        }
         }
       })
     }

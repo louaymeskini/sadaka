@@ -22,11 +22,11 @@ var annonceModelSchema = new Schema({
             required: true,
         },
         association: {
-            type: Schema.Types.ObjectId, ref: "associationModel"
+            type: Schema.Types.ObjectId, ref: "association"
         },
         benevoles:[
             {
-                type: Schema.Types.ObjectId, ref:"benevoleModel"
+                type: Schema.Types.ObjectId, ref:"benevole"
             }
         ]
     },

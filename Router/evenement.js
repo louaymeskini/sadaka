@@ -30,7 +30,7 @@ Router.get("/:id", function (req,res) {
 
 //ajouter evenement avec association (no benevole)
 Router.post("/ajouter", function (req,res) {
-    evenement = new evenementModel({titre: req.body.titre, sujet: req.body.sujet,
+    var evenement = new evenementModel({titre: req.body.titre, sujet: req.body.sujet,
         ville: req.body.ville, adresse: req.body.adresse, date: req.body.date,
         association: req.body.association, benevoles: req.body.benevoles});
     /*associationModel.findOne({_id: this.evenement.association}).exec((error, associationModel) => {

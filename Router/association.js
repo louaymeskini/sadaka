@@ -2,6 +2,7 @@ var express = require("express")
 var fs = require("fs")
 var Router = express.Router()
 var associationModel = require('../Models/associationModel')
+var benevoleModel = require('../Models/benevoleModel')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
@@ -15,17 +16,48 @@ Router.get("/", function (req, res) {
 })
 
 //.populate('dons')
-Router.get("/all", validateUser, function (req, res) {
-  associationModel.find({}).populate('benevoles').populate('annonces').populate('evenements').exec(function (errr, result) {
+
+Router.get("/all", function (req, res) {
+  associationModel.find({}).populate('benevoles').exec(function (errr, result) {
     res.send(result)
   })
 })
 
 // une seule association
 Router.get("/:id", validateUser, function (req, res) {
-  associationModel.findOne({_id: req.params.id}, function (err, result) {
-    if (err)
-      res.send({"state": "not ok", "msg": "err:" + err});
+  associationModel.findOne({_id: req.params.id}).populate('benevoles').exec(function (errr, result) {
+    if (errr)
+      res.send({"state": "not ok", "msg": "err:" + errr});
+    else
+      res.send(result);
+  })
+})
+
+// liste benevole d une seule association
+Router.get("/liste/benevole/:id", validateUser, function (req, res) {
+  associationModel.find({_id: req.params.id}).select('benevoles').populate('benevoles').exec(function (errr, result) {
+    if (errr)
+      res.send({"state": "not ok", "msg": "err:" + errr});
+    else
+      res.send(result);
+  })
+})
+
+// liste annonce d une seule association
+Router.get("/liste/annonce/:id", validateUser, function (req, res) {
+  associationModel.find({_id: req.params.id}).select('annonces').populate('annonces').exec(function (errr, result) {
+    if (errr)
+      res.send({"state": "not ok", "msg": "err:" + errr});
+    else
+      res.send(result);
+  })
+})
+
+// liste evenement d une seule association
+Router.get("/liste/evenement/:id", validateUser, function (req, res) {
+  associationModel.find({_id: req.params.id}).select('evenements').populate('evenements').exec(function (errr, result) {
+    if (errr)
+      res.send({"state": "not ok", "msg": "err:" + errr});
     else
       res.send(result);
   })
@@ -84,6 +116,37 @@ Router.post("/ajouter", upload.single('imageAssociation'), function (req, res) {
 
 })
 
+//modifier imageAssociation
+Router.put('/modifier/:id/imageassociation', upload.single("imageAssociation"), function (req, res) {
+  var file = __dirname + '/uploads/images' + req.file.originalname;
+  fs.readFile(req.file.path, function (err, data) {
+    fs.writeFile(file, data, function (err) {
+      if (err) {
+        console.error(err);
+        var response = {
+          message: 'Sorry, file couldn\'t be uploaded.',
+          filename: req.file.originalname
+        };
+      } else {
+        response = {
+          message: 'File uploaded successfully',
+          filename: req.file.originalname
+        };
+
+        associationModel.updateOne({_id: req.params.id}, {
+          imageAssociation: req.file.originalname}, function (err) {
+          if (err)
+            res.send({"state": "not ok", "msg": "err:" + err});
+          else
+            res.send({"state": "ok", "msg": "update:"});
+        })
+      }
+    });
+  });
+
+
+})
+
 Router.post('/file_upload', upload.single("file"), function (req, res) {
 
   var file = __dirname + '/uploads/images' + req.file.originalname;
@@ -110,12 +173,9 @@ Router.post('/file_upload', upload.single("file"), function (req, res) {
 })
 
 //modifier association + benevoles + evenements + annonces
-Router.put("/modifier/:id", upload.single('imageAssociation'), validateUser, function (req, res) {
-  var file = __dirname + '/uploads/images' + req.file.originalname;
-
+Router.put("/modifier/:id", validateUser, function (req, res) {
+  /*var file = __dirname + '/uploads/images' + req.file.originalname;
   fs.readFile(req.file.path, function (err, data) {
-
-
     fs.writeFile(file, data, function (err) {
       if (err) {
         console.error(err);
@@ -127,10 +187,9 @@ Router.put("/modifier/:id", upload.single('imageAssociation'), validateUser, fun
         response = {
           message: 'File uploaded successfully',
           filename: req.file.originalname
-        };
-
+        };*/
   associationModel.updateOne({_id: req.params.id}, {
-    imageAssociation: req.file.originalname, nom: req.body.nom,
+    nom: req.body.nom,
     ville: req.body.ville, adresse: req.body.adresse,
     codePostale: req.body.codePostale, tel: req.body.tel,
     email: req.body.email, username: req.body.username, password: bcrypt.hashSync(req.body.password, saltRounds)
@@ -139,17 +198,8 @@ Router.put("/modifier/:id", upload.single('imageAssociation'), validateUser, fun
       res.send({"state": "not ok", "msg": "err:" + err});
     else
       res.send({"state": "ok", "msg": "update:"});
-
       })
-
-  }
-  // res.end(JSON.stringify(response));
-});
-});
-
-
 })
-
 
 //delete association
 Router.delete("/supprimer/:id", validateUser, function (req, res) {
@@ -159,6 +209,87 @@ Router.delete("/supprimer/:id", validateUser, function (req, res) {
     }
     else {
       res.send({"state": "ok", "msg": "supprimer association:"});
+    }
+  })
+})
+
+//delete benevole membre
+Router.put("/supprimer/:id/benevole/:idB",validateUser, function (req, res) {
+  associationModel.updateOne({_id: req.params.id}, {$pull:{benevoles: req.params.idB}}, function (err) {
+      if (err) {
+        res.send({"state": "non", "msg": "err:" + err});
+      }
+      else {
+        //associationModel.save();
+        res.send({"state": "ok", "msg": "supprimer benevole membre:"});
+      }
+  })
+  })
+
+//add benevole membre
+Router.put("/ajouter/:id/benevole/:idB",validateUser, function (req, res) {
+  associationModel.updateOne({_id: req.params.id}, {$push:{benevoles: req.params.idB}}, function (err) {
+    //associationModel.benevoles.pull({_id: req.params.id}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      /*if (benevoleModel.associations === undefined){
+      benevoleModel.associations = [];
+      }*/
+        //benevoleModel.findOneAndUpdate({benevoles: req.params.idB}, {$push:{associations: req.params.id}})
+          //benevoleModel.associations.push(this.associationModel);
+        //benevoleModel.save();
+      //});
+      res.send({"state": "ok", "msg": "ajouter benevole membre:"});
+    }
+  })
+})
+
+//delete annonce of association
+Router.put("/supprimer/:id/annonce/:idA", function (req, res) {
+  associationModel.updateOne({_id: req.params.id}, {$pull:{annonces: req.params.idA}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "supprimer annonce du association:"});
+    }
+  })
+})
+
+//add annonce of association
+Router.put("/ajouter/:id/annonce/:idA", function (req, res) {
+  associationModel.updateOne({_id: req.params.id}, {$push:{annonces: req.params.idA}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "ajouter annonce du association"});
+    }
+  })
+})
+
+//delete evenement of association
+Router.put("/supprimer/:id/evenement/:idE", function (req, res) {
+  associationModel.updateOne({_id: req.params.id}, {$pull:{evenements: req.params.idE}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "supprimer evenement du association:"});
+    }
+  })
+})
+
+//add evenement of association
+Router.put("/ajouter/:id/evenement/:idE", function (req, res) {
+  associationModel.update({_id: req.params.id}, {$push:{evenements: req.params.idE}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "ajouter evenement du association"});
     }
   })
 })

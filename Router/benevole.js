@@ -13,12 +13,17 @@ Router.get("/", function (req, res) {
 })
 
 //liste benevole + associations + evenements + annonces
-Router.get("/all", function (req, res) {
+Router.get("/all", function (req,res) {
+  benevoleModel.find({}, function (err, result) {
+    res.send(result);
+  })
+})
+/*Router.get("/all", function (req, res) {
     benevoleModel.find({}).populate('associations').populate('evenements').populate('annonces').populate('dons').exec(function (errr, result) {
         res.send(result)
         //.populate({ path: 'associations', populate: { path: 'associations' }})
     })
-})
+})*/
 //validateUser
 
 // un seul benevole
@@ -29,6 +34,36 @@ Router.get("/:id", function (req,res) {
         else
             res.send(result);
     })
+})
+
+// liste associations d une seul benevole
+Router.get("/liste/association/:id", validateUser, function (req, res) {
+  benevoleModel.find({_id: req.params.id}).select('associations').populate('associations').exec(function (errr, result) {
+    if (errr)
+      res.send({"state": "not ok", "msg": "err:" + errr});
+    else
+      res.send(result);
+  })
+})
+
+// liste annonce d une seul benevole
+Router.get("/liste/annonce/:id", validateUser, function (req, res) {
+  benevoleModel.find({_id: req.params.id}).select('annonces').populate('annonces').exec(function (errr, result) {
+    if (errr)
+      res.send({"state": "not ok", "msg": "err:" + errr});
+    else
+      res.send(result);
+  })
+})
+
+// liste evenement d une seul benevole
+Router.get("/liste/evenement/:id", validateUser, function (req, res) {
+  benevoleModel.find({_id: req.params.id}).select('evenements').populate('evenements').exec(function (errr, result) {
+    if (errr)
+      res.send({"state": "not ok", "msg": "err:" + errr});
+    else
+      res.send(result);
+  })
 })
 
 //inscription benevole +
@@ -106,6 +141,81 @@ Router.delete("/supprimer/:id", function (req, res) {
             res.send({"state": "ok", "msg": "supprimer association:"});
         }
     })
+})
+
+//delete inscription association
+Router.put("/supprimer/:id/association/:idA",validateUser, function (req, res) {
+  benevoleModel.updateOne({_id: req.params.id}, {$pull:{associations: req.params.idA}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      //associationModel.save();
+      res.send({"state": "ok", "msg": "supprimer inscription association:"});
+    }
+  })
+})
+
+//add inscription association
+Router.put("/ajouter/:id/association/:idA",validateUser, function (req, res) {
+  benevoleModel.updateOne({_id: req.params.id}, {$push:{associations: req.params.idB}}, function (err) {
+    //associationModel.benevoles.pull({_id: req.params.id}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      //associationModel.save();
+      res.send({"state": "ok", "msg": "ajouter inscription association:"});
+    }
+  })
+})
+
+//delete annonce of benevole
+Router.put("/supprimer/:id/annonce/:idA", function (req, res) {
+  benevoleModel.updateOne({_id: req.params.id}, {$pull:{annonces: req.params.idA}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "supprimer annonce du benevole:"});
+    }
+  })
+})
+
+//add annonce of benevole
+Router.put("/ajouter/:id/annonce/:idA", function (req, res) {
+  benevoleModel.updateOne({_id: req.params.id}, {$push:{annonces: req.params.idA}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "ajouter annonce du benevole"});
+    }
+  })
+})
+
+//delete evenement of benevole
+Router.put("/supprimer/:id/evenement/:idE", function (req, res) {
+  benevoleModel.updateOne({_id: req.params.id}, {$pull:{evenements: req.params.idE}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "supprimer evenement du benevole:"});
+    }
+  })
+})
+
+//add evenement of benevole
+Router.put("/ajouter/:id/evenement/:idE", function (req, res) {
+  benevoleModel.update({_id: req.params.id}, {$push:{evenements: req.params.idE}}, function (err) {
+    if (err) {
+      res.send({"state": "non", "msg": "err:" + err});
+    }
+    else {
+      res.send({"state": "ok", "msg": "ajouter evenement du benevole"});
+    }
+  })
 })
 
 //authentification benevole

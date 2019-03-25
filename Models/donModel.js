@@ -17,10 +17,10 @@ var donModelSchema = new Schema({
             required: true,
         },
         benevole: {
-                type: Schema.Types.ObjectId, ref:"benevoleModel"
+                type: Schema.Types.ObjectId, ref:"benevole"
             },
         association: {
-            type: Schema.Types.ObjectId, ref:"associationModel"
+            type: Schema.Types.ObjectId, ref:"association"
         }
     },
     {

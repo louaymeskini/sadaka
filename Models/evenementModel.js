@@ -33,11 +33,11 @@ var evenementModelSchema = new Schema({
         },
         benevoles:[
             {
-                type: Schema.Types.ObjectId, ref:"benevoleModel"
+                type: Schema.Types.ObjectId, ref:"benevole"
             }
         ],
         association: {
-            type: Schema.Types.ObjectId, ref: "associationModel"
+            type: Schema.Types.ObjectId, ref: "association"
         }
     },
     {

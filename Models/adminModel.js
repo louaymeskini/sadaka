@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+var user= require("./userModel")
 
 var Schema = mongoose.Schema;
 
 
-var adminModelSchema = new Schema({
+var adminModelSchema = user.discriminator("admin", new Schema({
         nom: {
             type: String,
             trim: true,
@@ -15,32 +16,12 @@ var adminModelSchema = new Schema({
             type: String,
             trim: true,
             required: true,
-        },
-        email: {
-            type: String,
-            trim: true,
-            required: true,
-        },
-        username: {
-            type: String,
-            trim: true,
-            required: true,
-        },
-        password: {
-            type: String,
-            trim: true,
-            required: true,
         }
     },
     {
         timestamps: true
-    });
-
-adminModelSchema.pre('save', function (next) {
-    this.password = bcrypt.hashSync(this.password, saltRounds);
-    next();
-})
+    }));
 
 // Compile model from schema
-var adminModel = mongoose.model('adminModel', adminModelSchema );
+var adminModel = mongoose.model('admin');
 module.exports=adminModel;

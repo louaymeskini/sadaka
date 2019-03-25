@@ -16,6 +16,7 @@ import {
 } from '@coreui/react';
 // sidebar nav config
 import navigation from '../../_nav';
+import navigation2 from '../../_nav2';
 // routes config
 import routes from '../../routes';
 
@@ -33,58 +34,115 @@ class DefaultLayout extends Component {
   }
 
   render() {
-    return (
-      <div className="app">
-        <AppHeader fixed>
-          <Suspense  fallback={this.loading()}>
-            <DefaultHeader onLogout={e=>this.signOut(e)}/>
-          </Suspense>
-        </AppHeader>
-        <div className="app-body">
-          <AppSidebar fixed display="lg">
-            <AppSidebarHeader />
-            <AppSidebarForm />
-            <Suspense>
-            <AppSidebarNav navConfig={navigation} {...this.props} />
+    if(localStorage.getItem("type")==="admin"){
+      return (
+        <div className="app">
+          <AppHeader fixed>
+            <Suspense  fallback={this.loading()}>
+              <DefaultHeader onLogout={e=>this.signOut(e)}/>
             </Suspense>
-            <AppSidebarFooter />
-            <AppSidebarMinimizer />
-          </AppSidebar>
-          <main className="main">
-            <AppBreadcrumb appRoutes={routes}/>
-            <Container fluid>
-              <Suspense fallback={this.loading()}>
-                <Switch>
-                  {routes.map((route, idx) => {
-                    return route.component ? (
-                      <Route
-                        key={idx}
-                        path={route.path}
-                        exact={route.exact}
-                        name={route.name}
-                        render={props => (
-                          <route.component {...props} />
-                        )} />
-                    ) : (null);
-                  })}
-                  <Redirect from="/" to="/home/association" />
-                </Switch>
+          </AppHeader>
+          <div className="app-body">
+            <AppSidebar fixed display="lg">
+              <AppSidebarHeader />
+              <AppSidebarForm />
+              <Suspense>
+                <AppSidebarNav navConfig={navigation} {...this.props} />
               </Suspense>
-            </Container>
-          </main>
-          <AppAside fixed>
+              <AppSidebarFooter />
+              <AppSidebarMinimizer />
+            </AppSidebar>
+            <main className="main">
+              <AppBreadcrumb appRoutes={routes}/>
+              <Container fluid>
+                <Suspense fallback={this.loading()}>
+                  <Switch>
+                    {routes.map((route, idx) => {
+                      return route.component ? (
+                        <Route
+                          key={idx}
+                          path={route.path}
+                          exact={route.exact}
+                          name={route.name}
+                          render={props => (
+                            <route.component {...props} />
+                          )} />
+                      ) : (null);
+                    })}
+                    <Redirect from="/" to="/home/association" />
+                  </Switch>
+                </Suspense>
+              </Container>
+            </main>
+            <AppAside fixed>
+              <Suspense fallback={this.loading()}>
+                <DefaultAside />
+              </Suspense>
+            </AppAside>
+          </div>
+          <AppFooter>
             <Suspense fallback={this.loading()}>
-              <DefaultAside />
+              <DefaultFooter />
             </Suspense>
-          </AppAside>
+          </AppFooter>
         </div>
-        <AppFooter>
-          <Suspense fallback={this.loading()}>
-            <DefaultFooter />
-          </Suspense>
-        </AppFooter>
-      </div>
-    );
+      );
+    }
+    else{
+      return (
+        <div className="app">
+          <AppHeader fixed>
+            <Suspense  fallback={this.loading()}>
+              <DefaultHeader onLogout={e=>this.signOut(e)}/>
+            </Suspense>
+          </AppHeader>
+          <div className="app-body">
+            <AppSidebar fixed display="lg">
+              <AppSidebarHeader />
+              <AppSidebarForm />
+              <Suspense>
+                <AppSidebarNav navConfig={navigation2} {...this.props} />
+              </Suspense>
+              <AppSidebarFooter />
+              <AppSidebarMinimizer />
+            </AppSidebar>
+            <main className="main">
+              <AppBreadcrumb appRoutes={routes}/>
+              <Container fluid>
+                <Suspense fallback={this.loading()}>
+                  <Switch>
+                    {routes.map((route, idx) => {
+                      return route.component ? (
+                        <Route
+                          key={idx}
+                          path={route.path}
+                          exact={route.exact}
+                          name={route.name}
+                          render={props => (
+                            <route.component {...props} />
+                          )} />
+                      ) : (null);
+                    })}
+                    <Redirect from="/" to="/home/association" />
+                  </Switch>
+                </Suspense>
+              </Container>
+            </main>
+            <AppAside fixed>
+              <Suspense fallback={this.loading()}>
+                <DefaultAside />
+              </Suspense>
+            </AppAside>
+          </div>
+          <AppFooter>
+            <Suspense fallback={this.loading()}>
+              <DefaultFooter />
+            </Suspense>
+          </AppFooter>
+        </div>
+      );
+    }
+
   }
 }
 

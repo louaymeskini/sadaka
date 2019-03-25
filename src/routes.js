@@ -42,6 +42,13 @@ const ModifierAssociation = React.lazy(() => import('./views/association/Modifie
 const benevole = React.lazy(() => import('./views/benevole/benevole'));
 const ModifierBenevole = React.lazy(() => import('./views/benevole/ModifierBenevole/ModifierBenevole'));
 const ModifierAdmin = React.lazy(() => import('./views/admin/ModifierAdmin'));
+// session association
+const benevoleMembre = React.lazy(() => import('./views/benevoleAssociation/benevoleMembre'));
+const AjouterEvenement = React.lazy(() => import('./views/evenement/AjouterEvenement/AjouterEvenement'));
+const evenement = React.lazy(() => import('./views/evenement/evenement'));
+const annonce = React.lazy(() => import('./views/annonce/annonce'));
+const AjouterAnnonce = React.lazy(() => import('./views/annonce/AjouterAnnonce/AjouterAnnonce'));
+const ModifierAssociation2 = React.lazy(() => import('./views/association/ModifierAssociation2/ModifierAssociation2'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -91,7 +98,13 @@ const routes = [
   { path: '/home/association/modifier', exact: true, name: 'Modifier Association', component: ModifierAssociation },
   { path: '/home/benevole', exact: true, name: 'Liste Benevoles', component: benevole },
   { path: '/home/benevole/modifier', exact: true, name: 'Modifier Benevole', component: ModifierBenevole },
-  { path: '/home/admin/modifier', exact: true, name: 'Modifier Administrateur', component: ModifierAdmin }
+  { path: '/home/admin/modifier', exact: true, name: 'Modifier Administrateur', component: ModifierAdmin },
+  { path: '/home/benevole/membre', exact: true, name: 'benevole Membre', component: benevoleMembre },
+  { path: '/home/evenement/ajouter', exact: true, name: 'Ajouter Evenement', component: AjouterEvenement },
+  { path: '/home/evenement', exact: true, name: 'Liste Evenements', component: evenement },
+  { path: '/home/annonce', exact: true, name: 'Liste Annonces', component: annonce },
+  { path: '/home/annonce/ajouter', exact: true, name: 'Ajouter Annonce', component: AjouterAnnonce },
+  { path: '/home/association/profile', exact: true, name: 'Modifier Association', component: ModifierAssociation2 },
 
 ];
 

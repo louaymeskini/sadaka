@@ -38,12 +38,13 @@ Router.post("/ajouter", function (req,res) {
     item.save(()=>{next();});
     associationModel.save();
 });*/
-    evenement.save(function (err) {
+    evenement.save(function (err, data) {
         if(err){
             res.send({"state":"not ok","msg":"err:"+err});
         }
         else{
-            res.send({"state":"ok","msg":"Ajout evenement"});
+            //res.send({"state":"ok","msg":"Ajout evenement"});
+          res.send(data);
         }
     })
 })

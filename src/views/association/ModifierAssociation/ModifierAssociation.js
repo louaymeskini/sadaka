@@ -24,6 +24,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 class ModifierAssociation extends Component {
@@ -57,8 +58,16 @@ class ModifierAssociation extends Component {
       imageAssociation:"",
       collapse: true,
       fadeIn: true,
-      timeout: 300
+      timeout: 300,
+      warning: false
     };
+    //this.toggleWarning = this.toggleWarning.bind(this);
+  }
+
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
+    });
   }
 
   componentDidMount(){
@@ -71,7 +80,7 @@ class ModifierAssociation extends Component {
       "content-type":"application/json",
       'x-access-token':localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/"+localStorage.getItem("idAssociation"), {method: 'GET', headers: headers})
+    fetch("http://127.0.0.1:8000/association/"+localStorage.getItem("idAssociationAdmin"), {method: 'GET', headers: headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -160,7 +169,7 @@ class ModifierAssociation extends Component {
       }
 
 
-      fetch("http://127.0.0.1:8000/association/modifier/"+localStorage.getItem("idAssociation"), options)
+      fetch("http://127.0.0.1:8000/association/modifier/"+localStorage.getItem("idAssociationAdmin"), options)
 
         .then(response => response.json())
 
@@ -185,7 +194,7 @@ class ModifierAssociation extends Component {
 
           if(this.state.file.name != "File") {
 
-            axios.put("http://127.0.0.1:8000/association/modifier/"+localStorage.getItem("idAssociation")+"/imageassociation", formData, config)
+            axios.put("http://127.0.0.1:8000/association/modifier/"+localStorage.getItem("idAssociationAdmin")+"/imageassociation", formData, config)
 
               .then(function (response) {
                 console.log('saved successfully')
@@ -193,13 +202,14 @@ class ModifierAssociation extends Component {
 
           }
           console.log("data", data);
-          //window.location.href="/#/home/benevole/membre";
+          window.location.href="/#/home/association";
 
         })
     }
     else
     {
-      alert("confirmer votre password");
+      //alert("confirmer votre password");
+      this.toggleWarningClose();
     }
   }
 
@@ -280,18 +290,28 @@ class ModifierAssociation extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="hf-password">Mot De Passe Association</Label>
-                  <Input type="password" id="hf-password" name="hf-password" placeholder="Mot de Passe" autoComplete="current-password"
+                  <Input type="password" id="hf-password" name="hf-password" placeholder="Ancien / Nouveau Mot de Passe Association" autoComplete="current-password"
                          onChange={evt=> this.setState({password: evt.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="hf-password2">Confirmed Mot De Passe</Label>
-                  <Input type="password" id="hf-password2" name="hf-password2" placeholder="Confirmer votre mot de passe" autoComplete="current-password"
+                  <Label htmlFor="hf-password2">Confirmer Mot De Passe Association</Label>
+                  <Input type="password" id="hf-password2" name="hf-password2" placeholder="Confirmer mot de passe Association" autoComplete="current-password"
                          onChange={evt=> this.setState({confirmedpassword: evt.target.value})} />
                 </FormGroup>
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="sm" color="primary" onClick={this.handleEdit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                       className={'modal-warning ' + this.props.className}>
+                  <ModalHeader toggle={this.toggleWarning}>Erreur de modification</ModalHeader>
+                  <ModalBody>
+                    Vous devez confirmer le mot de passe !
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="warning" onClick={this.toggleWarningClose}>OK</Button>{' '}
+                  </ModalFooter>
+                </Modal>
               </CardFooter>
             </Card>
           </Col>

@@ -67,8 +67,8 @@ Router.get("/liste/evenement/:id", validateUser, function (req, res) {
 })
 
 //inscription benevole +
-Router.post("/ajouter", function (req, res) {
-    benevole = new benevoleModel({
+Router.post("/ajouter",validateUser, function (req, res) {
+    var benevole = new benevoleModel({
         nom: req.body.nom, prenom: req.body.prenom,
         sexe: req.body.sexe, ville: req.body.ville, adresse: req.body.adresse,
         codePostale: req.body.codePostale, tel: req.body.tel,
@@ -92,8 +92,8 @@ Router.post("/ajouter", function (req, res) {
 })
 
 //modification benevole + associations + evenements + annonces
-Router.put("/modifier/:id", function (req, res) {
-    benevole = benevoleModel.updateOne({_id: req.params.id}, {
+Router.put("/modifier/:id",validateUser, function (req, res) {
+    var benevole = benevoleModel.updateOne({_id: req.params.id}, {
         nom: req.body.nom, prenom: req.body.prenom,
         sexe: req.body.sexe, ville: req.body.ville, adresse: req.body.adresse,
         codePostale: req.body.codePostale, tel: req.body.tel,
@@ -115,7 +115,7 @@ Router.put("/modifier/:id", function (req, res) {
 })
 
 //mise a jour de l'association du benevole GRRRRR
-Router.patch("/modifier/association/:id", function (req,res) {
+Router.patch("/modifier/association/:id",validateUser, function (req,res) {
       benevoleModel.updateOne({_id: req.params.id}, {
         nom: req.body.nom, prenom: req.body.prenom,
         sexe: req.body.sexe, ville: req.body.ville, adresse: req.body.adresse,
@@ -132,7 +132,7 @@ Router.patch("/modifier/association/:id", function (req,res) {
 })
 
 //supprimer benevole
-Router.delete("/supprimer/:id", function (req, res) {
+Router.delete("/supprimer/:id",validateUser, function (req, res) {
     benevoleModel.deleteOne({_id: req.params.id}, function (err) {
         if (err) {
             res.send({"state": "non", "msg": "err:" + err});
@@ -171,7 +171,7 @@ Router.put("/ajouter/:id/association/:idA",validateUser, function (req, res) {
 })
 
 //delete annonce of benevole
-Router.put("/supprimer/:id/annonce/:idA", function (req, res) {
+Router.put("/supprimer/:id/annonce/:idA",validateUser, function (req, res) {
   benevoleModel.updateOne({_id: req.params.id}, {$pull:{annonces: req.params.idA}}, function (err) {
     if (err) {
       res.send({"state": "non", "msg": "err:" + err});
@@ -183,7 +183,7 @@ Router.put("/supprimer/:id/annonce/:idA", function (req, res) {
 })
 
 //add annonce of benevole
-Router.put("/ajouter/:id/annonce/:idA", function (req, res) {
+Router.put("/ajouter/:id/annonce/:idA",validateUser, function (req, res) {
   benevoleModel.updateOne({_id: req.params.id}, {$push:{annonces: req.params.idA}}, function (err) {
     if (err) {
       res.send({"state": "non", "msg": "err:" + err});
@@ -195,7 +195,7 @@ Router.put("/ajouter/:id/annonce/:idA", function (req, res) {
 })
 
 //delete evenement of benevole
-Router.put("/supprimer/:id/evenement/:idE", function (req, res) {
+Router.put("/supprimer/:id/evenement/:idE",validateUser, function (req, res) {
   benevoleModel.updateOne({_id: req.params.id}, {$pull:{evenements: req.params.idE}}, function (err) {
     if (err) {
       res.send({"state": "non", "msg": "err:" + err});
@@ -207,7 +207,7 @@ Router.put("/supprimer/:id/evenement/:idE", function (req, res) {
 })
 
 //add evenement of benevole
-Router.put("/ajouter/:id/evenement/:idE", function (req, res) {
+Router.put("/ajouter/:id/evenement/:idE",validateUser, function (req, res) {
   benevoleModel.update({_id: req.params.id}, {$push:{evenements: req.params.idE}}, function (err) {
     if (err) {
       res.send({"state": "non", "msg": "err:" + err});

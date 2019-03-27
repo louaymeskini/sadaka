@@ -24,6 +24,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 class AjouterEvenement extends Component {
@@ -43,10 +44,17 @@ class AjouterEvenement extends Component {
       collapse: true,
       fadeIn: true,
       timeout: 300,
-      file:File
+      file:File,
+      warning: false
     };
+    //this.toggleWarning = this.toggleWarning.bind(this);
   }
 
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
+    });
+  }
 
   componentDidMount(){
     console.log("okk did");
@@ -71,7 +79,8 @@ console.log("okkkkkkk");
     if (titre === ""||sujet===""||ville===""||
       adresse===""||date==="")
     {
-      alert("no data");
+      //alert("no data");
+      this.toggleWarningClose();
     }
     else
     {
@@ -85,8 +94,13 @@ console.log("okkkkkkk");
       axios.post("http://127.0.0.1:8000/evenement/ajouter",data,{headers: headers})
         .then(res=>{
         console.log(res.data)
+          fetch("http://127.0.0.1:8000/association/ajouter/"+localStorage.getItem("idAssociation")+"/evenement/"+res.data._id, {method: 'PUT', headers:headers})
+            .then(response => response.json())
+            .then(data => {
+              console.log("pushed = true",data);
+            })
 
-          window.location.href="/#/home/benevole/membre";
+          window.location.href="/#/home/evenement";
 
       })
     }
@@ -152,6 +166,16 @@ console.log("okkkkkkk");
                 <Button type="submit" size="sm" color="primary" onClick={this.handlesubmit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
+              <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                     className={'modal-warning ' + this.props.className}>
+                <ModalHeader toggle={this.toggleWarning}>Erreur D'ajout</ModalHeader>
+                <ModalBody>
+                  Vous devez remplire tous les champs !
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="warning" onClick={this.toggleWarningClose}>OK</Button>{' '}
+                </ModalFooter>
+              </Modal>
             </Card>
           </Col>
 

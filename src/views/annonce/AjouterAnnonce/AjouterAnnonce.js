@@ -24,6 +24,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 class AjouterAnnonce extends Component {
@@ -38,11 +39,14 @@ class AjouterAnnonce extends Component {
       sujet:"",
       pieceJointe:"",
       association:"",
+      currentId:"",
       collapse: true,
       fadeIn: true,
       timeout: 300,
-      file:File
+      file:File,
+      warning: false
     };
+    //this.toggleWarning = this.toggleWarning.bind(this);
   }
 
 
@@ -58,8 +62,10 @@ class AjouterAnnonce extends Component {
     this.setState({file:file});
   }
 
-  componentDidMount(){
-    console.log("okk did");
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
+    });
   }
 
   handlesubmit(){
@@ -77,7 +83,8 @@ console.log("okkkkkkk");
 
     if (titre === ""||sujet===""||pieceJointe==="")
     {
-      alert("no data");
+      //alert("no data");
+      this.toggleWarningClose();
     }
     else
     {
@@ -97,10 +104,19 @@ console.log("okkkkkkk");
       axios.post("http://127.0.0.1:8000/annonce/ajouter",formData,{headers: headers})
         .then(res=>{
         console.log(res.data)
-
+          fetch("http://127.0.0.1:8000/association/ajouter/"+localStorage.getItem("idAssociation")+"/annonce/"+res.data._id, {method: 'PUT', headers:headers})
+            .then(response => response.json())
+            .then(data => {
+              console.log("pushed = true",data);
+            })
+          //this.setState({currentId:res.data._id});
+          //console.log("current id: ",res.data._id)
           window.location.href="/#/home/annonce";
-
       })
+
+      //var currentId = res.data._id;
+      //console.log("current id: ", this.state.currentId)
+      //fetch("http://127.0.0.1:8000/association/ajouter/"+localStorage.getItem("idAssociation")+"/annonce/"+id, {method: 'PUT', headers:headers})
     }
 
   }
@@ -150,6 +166,16 @@ console.log("okkkkkkk");
                 <Button type="submit" size="sm" color="primary" onClick={this.handlesubmit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
+              <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                     className={'modal-warning ' + this.props.className}>
+                <ModalHeader toggle={this.toggleWarning}>Erreur D'ajout</ModalHeader>
+                <ModalBody>
+                  Vous devez remplire tous les champs !
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="warning" onClick={this.toggleWarningClose}>OK</Button>{' '}
+                </ModalFooter>
+              </Modal>
             </Card>
           </Col>
 

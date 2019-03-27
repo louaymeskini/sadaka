@@ -24,6 +24,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 class ModifierAssociation2 extends Component {
@@ -58,8 +59,16 @@ class ModifierAssociation2 extends Component {
       imageAssociation:"",
       collapse: true,
       fadeIn: true,
-      timeout: 300
+      timeout: 300,
+      warning: false
     };
+    //this.toggleWarning = this.toggleWarning.bind(this);
+  }
+
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
+    });
   }
 
   componentDidMount(){
@@ -194,17 +203,16 @@ class ModifierAssociation2 extends Component {
 
           }
           console.log("data", data);
-        //window.location.href="/#/home/benevole/membre";
+        window.location.href="/#/home/benevole/membre";
 
         })
     }
     else
     {
-      alert("confirmer votre password");
+      //alert("confirmer votre password");
+      this.toggleWarningClose();
     }
   }
-
-
 
   toggle() {
     this.setState({ collapse: !this.state.collapse });
@@ -282,7 +290,7 @@ class ModifierAssociation2 extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="hf-password">Mot De Passe Association</Label>
-                  <Input type="password" id="hf-password" name="hf-password" placeholder="Mot de passe" autoComplete="current-password"
+                  <Input type="password" id="hf-password" name="hf-password" placeholder="Ancien / Nouveau Mot de passe" autoComplete="current-password"
                          onChange={evt=> this.setState({password: evt.target.value})} />
                 </FormGroup>
                 <FormGroup>
@@ -294,6 +302,16 @@ class ModifierAssociation2 extends Component {
               <CardFooter>
                 <Button type="submit" size="sm" color="primary" onClick={this.handleEdit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                       className={'modal-warning ' + this.props.className}>
+                  <ModalHeader toggle={this.toggleWarning}>Erreur de modification</ModalHeader>
+                  <ModalBody>
+                    Vous devez confirmer le mot de passe !
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="warning" onClick={this.toggleWarningClose}>OK</Button>{' '}
+                  </ModalFooter>
+                </Modal>
               </CardFooter>
             </Card>
           </Col>

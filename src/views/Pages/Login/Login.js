@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row ,FormText, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import  axios from 'axios';
 
 class Login extends Component {
@@ -9,20 +9,76 @@ class Login extends Component {
     super(props);
     this.state={
       email:"",
-      password:""
+      emailErr:"",
+      password:"",
+      passwordErr:"",
+      warning: false
     }
+    //this.toggleWarning = this.toggleWarning.bind(this);
+  }
+
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
+    });
+  }
+
+  validate = () => {
+
+    let isError = false;
+
+    const errors = {
+      emailErr: "",
+      passwordErr: "",
+    }
+
+    console.log("login ",this.state.login);
+    console.log("pws ",this.state.password);
+
+
+
+    const regex1=/^[a-zA-Z0-9._-]+$/;
+
+
+    if ((this.state.email==="")||(this.state.email.length > 15)||!regex1.test(this.state.email)) {
+
+      isError = true;
+      errors.emailErr = "Veuillez verifier votre login";
+    }
+
+
+    if ((this.state.password==="")||(this.state.password.length > 20)||!regex1.test(this.state.password)) {
+
+      isError = true;
+      errors.passwordErr = "veuillez verifier votre mot de passe";
+    }
+
+
+
+    if (isError) {
+      this.setState({
+        ...this.state,
+        ...errors
+      })
+    }
+
+    console.log("errrr ", isError)
+
+
+    this.setState({
+      erreur:isError
+    })
+
+    return isError;
   }
 
   login(){
     console.log("email");
     console.log("email", this.state.email);
     console.log("password", this.state.password);
-    if (this.state.email === "" && this.state.password==="")
-    {
-      alert("no data");
-    }
-    else
-    {
+    let err=this.validate();
+
+    if(!err){
       axios.post("http://localhost:8000/auth", {
         email:this.state.email,
         password:this.state.password
@@ -30,7 +86,8 @@ class Login extends Component {
         console.log(res.data)
 
         if(res.data['data'] === null){
-          alert("password or email are incorrect")
+          //alert("password or email are incorrect")
+          this.toggleWarningClose();
         }
         else
         {
@@ -54,7 +111,8 @@ class Login extends Component {
 
         }
         else{
-          alert("votre incorrect");
+          //alert("votre incorrect");
+          this.toggleWarningClose();
         }
         }
       })
@@ -81,10 +139,27 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="text" placeholder="Username" autoComplete="username"
+                        <Input type="email" id="hf-email" name="hf-email" placeholder="Entrer Email..." autoComplete="email"
                                value={this.state.email} onChange={evt=> this.setState({email: evt.target.value})}/>
                       </InputGroup>
-                      <InputGroup className="mb-4">
+                    {
+
+                      this.state.erreur===false ?
+
+                        <FormText >{this.state.emailErr}</FormText>:null
+
+                    }
+
+
+                    {
+
+                      this.state.erreur===true ?
+
+                        <FormText id="color12">{this.state.emailErr}</FormText>:null
+
+                    }
+
+                    <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="icon-lock"></i>
@@ -93,6 +168,22 @@ class Login extends Component {
                         <Input type="password" placeholder="Password" autoComplete="current-password"
                                value={this.state.password} onChange={evt=> this.setState({password: evt.target.value})}/>
                       </InputGroup>
+                    {
+
+                      this.state.erreur===false ?
+
+                        <FormText >{this.state.passwordErr}</FormText>:null
+
+                    }
+
+
+                    {
+
+                      this.state.erreur===true ?
+
+                        <FormText id="color12">{this.state.passwordErr}</FormText>:null
+
+                    }
                       <Row>
                         <Col xs="6">
                           <Button color="primary" className="px-4" onClick={this.login.bind(this)}>Login</Button>
@@ -103,6 +194,16 @@ class Login extends Component {
                       </Row>
 
                   </CardBody>
+                  <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                         className={'modal-warning ' + this.props.className}>
+                    <ModalHeader toggle={this.toggleWarning}>Erreur D'authentification</ModalHeader>
+                    <ModalBody>
+                      Vous devez verifier votre Email et Mot de passe  !
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="warning" onClick={this.toggleWarningClose}>OK</Button>{' '}
+                    </ModalFooter>
+                  </Modal>
                 </Card>
 
               </CardGroup>

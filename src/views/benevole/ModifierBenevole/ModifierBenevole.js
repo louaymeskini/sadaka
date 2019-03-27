@@ -24,6 +24,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 class ModifierBenevole extends Component {
@@ -42,7 +43,9 @@ class ModifierBenevole extends Component {
         adresse:"",
         codePostale:"",
         tel:"",
-        email:""
+        email:"",
+        password:"",
+        username:""
       },
       nom:"",
       prenom:"",
@@ -54,8 +57,22 @@ class ModifierBenevole extends Component {
       email:"",
       collapse: true,
       fadeIn: true,
-      timeout: 300
+      timeout: 300,
+      warning: false
     };
+    //this.toggleWarning = this.toggleWarning.bind(this);
+  }
+
+
+handleChangeGenre(evt){
+    console.log("genre ", evt.target.value);
+    this.setState({sexe:evt.target.value})
+}
+
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
+    });
   }
 
   componentDidMount(){
@@ -68,7 +85,7 @@ class ModifierBenevole extends Component {
       "content-type":"application/json",
       'x-access-token':localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/benevole/"+localStorage.getItem("id"), {method: 'GET', headers: headers})
+    fetch("http://127.0.0.1:8000/benevole/"+localStorage.getItem("idBenevole"), {method: 'GET', headers: headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -77,47 +94,75 @@ class ModifierBenevole extends Component {
   }
 
   handleEdit(){
-    console.log("state: ",this.state)
-    const headers={
-      "content-type":"application/json",
-      'x-access-token':localStorage.getItem("token")
-    }
+
     if (this.state.nom === "")
     {
-      this.state.nom=this.state.association.nom;
+      this.state.nom=this.state.benevole.nom;
+      console.log("state: ",this.state.nom);
+
     }
+
     if (this.state.prenom === "")
     {
-      this.state.prenom=this.state.association.prenom;
+      this.state.prenom=this.state.benevole.prenom;
+      console.log("state: ",this.state.prenom);
+
     }
+
     if (this.state.sexe === "")
     {
-      this.state.sexe=this.state.association.sexe;
+      this.state.sexe=this.state.benevole.sexe;
+      console.log("state: ",this.state.sexe);
+
     }
+
     if (this.state.ville === "")
     {
-      this.state.ville=this.state.association.ville;
+      this.state.ville=this.state.benevole.ville;
+      console.log("state: ",this.state.ville);
+
     }
+
     if (this.state.adresse === "")
     {
-      this.state.adresse=this.state.association.adresse;
+      this.state.adresse=this.state.benevole.adresse;
+      console.log("state: ",this.state.adresse);
+
     }
+
     if (this.state.codePostale === "")
     {
-      this.state.codePostale=this.state.association.codePostale;
+      this.state.codePostale=this.state.benevole.codePostale;
+      console.log("state: ",this.state.codePostale);
+
     }
+
     if (this.state.tel === "")
     {
-      this.state.tel=this.state.association.tel;
+      this.state.tel=this.state.benevole.tel;
+      console.log("state: ",this.state.tel);
+
     }
+
     if (this.state.email === "")
     {
-      this.state.email=this.state.association.email;
-    }
-    else
-    {
-      axios.put("http://127.0.0.1:8000/benevole/modifier/"+localStorage.getItem("id"), {
+      this.state.email=this.state.benevole.email;
+      console.log("state: ",this.state.email);
 
+    }
+
+
+  else if(this.state != "")
+    {
+      console.log("state: ",this.state);
+
+      const headers={
+        "content-type":"application/json",
+        'x-access-token':localStorage.getItem("token")
+      }
+
+      console.log("else")
+      axios.put("http://127.0.0.1:8000/benevole/modifier/"+localStorage.getItem("idBenevole"), {
         nom:this.state.nom,
         prenom:this.state.prenom,
         sexe:this.state.sexe,
@@ -125,11 +170,16 @@ class ModifierBenevole extends Component {
         adresse:this.state.adresse,
         codePostale:this.state.codePostale,
         tel:this.state.tel,
-        email:this.state.email
+        email:this.state.email,
+        password:this.state.benevole.password,
+        username:this.state.benevole.username
       },{headers: headers}).then(res=>{
-        console.log(res.data)
+
+        console.log("data ",res.data)
         if(res.data === ""){
-          alert("Vous devez remplissez tous les champs")
+
+          //alert("Vous devez remplissez tous les champs")
+          this.toggleWarningClose();
         }
         else
         {
@@ -137,14 +187,6 @@ class ModifierBenevole extends Component {
         }
       })
     }
-    this.setState({nom:""})
-    this.setState({prenom:""})
-    this.setState({sexe:""})
-    this.setState({ville:""})
-    this.setState({adresse:""})
-    this.setState({codePostale:""})
-    this.setState({tel:""})
-    this.setState({email:""})
 
   }
 
@@ -179,15 +221,47 @@ class ModifierBenevole extends Component {
                   <Input type="text" id="street" placeholder={this.state.benevole.prenom}
                          onChange={evt=> this.setState({prenom: evt.target.value})}/>
                 </FormGroup>
-                <FormGroup>
-                    <Label htmlFor="select">Sexe</Label>
+                {
+                  this.state.benevole.sexe ==="Homme" ?
+                    <FormGroup row>
+                      <Col md="3">
+                        <Label>Genre</Label>
+                      </Col>
+                      <Col md="10">
+                        <FormGroup check className="radio">
+                          <Input className="form-check-input" type="radio" id="radio1" name="radios" checked value="Homme" onChange={evt=>this.handleChangeGenre(evt)}/>
+                          <Label check className="form-check-label" htmlFor="radio1">Homme</Label>
+                        </FormGroup>
+                        <FormGroup check className="radio">
+                          <Input className="form-check-input" type="radio" id="radio2" name="radios" value="Femme"  onChange={evt=>this.handleChangeGenre(evt)}/>
+                          <Label check className="form-check-label" htmlFor="radio2">Femme</Label>
+                        </FormGroup>
+                      </Col>
+                    </FormGroup>
+                    :null
+                }
 
-                    <Input type="select" name="select" id="select">
-                      <option value="0">Homme</option>
-                      <option value="1">Femme</option>
-                    </Input>
+                {
+                  this.state.benevole.sexe ==="Femme" ?
+                    <FormGroup row>
+                      <Col md="3">
+                        <Label>Genre</Label>
+                      </Col>
+                      <Col md="10">
+                        <FormGroup check className="radio">
+                          <Input className="form-check-input" type="radio" id="radio1" name="radios"  value="Homme" onChange={evt=>this.handleChangeGenre(evt)}/>
+                          <Label check className="form-check-label" htmlFor="radio1">Homme</Label>
+                        </FormGroup>
+                        <FormGroup check className="radio">
+                          <Input className="form-check-input" type="radio" id="radio2" name="radios" checked value="Femme" checked onChange={evt=>this.handleChangeGenre(evt)}/>
+                          <Label check className="form-check-label" htmlFor="radio2">Femme</Label>
+                        </FormGroup>
+                      </Col>
+                    </FormGroup>
+                    :null
+                }
 
-                </FormGroup>
+
                 <FormGroup>
                   <Label htmlFor="country">Adresse</Label>
                   <Input type="text" id="country" placeholder={this.state.benevole.adresse}
@@ -223,6 +297,16 @@ class ModifierBenevole extends Component {
               <CardFooter>
                 <Button type="submit" size="sm" color="primary" onClick={this.handleEdit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                       className={'modal-warning ' + this.props.className}>
+                  <ModalHeader toggle={this.toggleWarning}>Erreur de modification</ModalHeader>
+                  <ModalBody>
+                    Voulez devez au moins modifier une information !
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="warning" onClick={this.toggleWarningClose}>OK</Button>{' '}
+                  </ModalFooter>
+                </Modal>
               </CardFooter>
             </Card>
           </Col>

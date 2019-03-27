@@ -66,7 +66,13 @@ Router.get("/liste/evenement/:id", validateUser, function (req, res) {
 // une seule img
 Router.get("/img/:imageAssociation", function (req, res) {
   //var file = __dirname + '/uploads/images' + req.file.originalname;
-  res.sendFile(__dirname + '/uploads/images'+req.params.imageAssociation);
+  try {
+    res.sendFile(__dirname + '/uploads/images' + req.params.imageAssociation);
+  }
+  catch (err){
+    //res.send({"state": "not ok", "msg": "err:" + err});
+    res.json({status: "error", message: "image doesn't exist!!!", err});
+  }
 })
 
 //ajouter association + benevoles + evenements + annonces

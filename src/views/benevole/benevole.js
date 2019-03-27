@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 let prev  = 0;
 let next  = 0;
 let last  = 0;
@@ -12,13 +12,17 @@ class benevole extends Component {
     this.state={
       benevoles:[],
       currentPage: 1,
-      todosPerPage: 5
+      todosPerPage: 5,
+      warning: false,
+      id:"",
+      nom:""
     }
     this.handleClick = this.handleClick.bind(this);
 
     this.handleLastClick = this.handleLastClick.bind(this);
 
     this.handleFirstClick = this.handleFirstClick.bind(this);
+    this.toggleWarning = this.toggleWarning.bind(this);
 
   }
   handleClick(event) {
@@ -30,8 +34,6 @@ class benevole extends Component {
     });
   }
 
-
-
   handleLastClick(event) {
 
     event.preventDefault();
@@ -41,13 +43,28 @@ class benevole extends Component {
     });
   }
 
-
   handleFirstClick(event) {
 
     event.preventDefault();
 
     this.setState({
       currentPage:1
+    });
+  }
+
+  toggleWarning(e,id,nom) {
+    e.preventDefault();
+    console.log("id ",id);
+    this.setState({
+      warning: !this.state.warning,
+    });
+    this.setState({id:id})
+    this.setState({nom:nom})
+  }
+
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
     });
   }
 
@@ -69,14 +86,14 @@ class benevole extends Component {
       })
   }
 
-  remove(e,id){
+  remove=(e)=>{
     e.preventDefault();
-    console.log("id: ",id);
+    //console.log("id: ",id);
     const headers={
       "content-type":"application/json",
       "x-access-token":localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/benevole/supprimer/"+id, {method: 'DELETE', headers:headers})
+    fetch("http://127.0.0.1:8000/benevole/supprimer/"+this.state.id, {method: 'DELETE', headers:headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -84,7 +101,8 @@ class benevole extends Component {
           alert("benevole n est pas supprime");
         }
         else{
-          alert("suppression effectue");
+          //alert("suppression effectue");
+          this.toggleWarningClose();
           this.getAll();
         }
       })
@@ -93,7 +111,7 @@ class benevole extends Component {
   modif(e,id){
     e.preventDefault();
     console.log("id: ",id);
-    localStorage.setItem("id",id);
+    localStorage.setItem("idBenevole",id);
     window.location.href="/#/home/benevole/modifier";
   }
 
@@ -171,7 +189,7 @@ class benevole extends Component {
                     <td>{item.tel}</td>
                     <td>{item.email}</td>
                     <td><i className="fa fa-edit" onClick={e=>this.modif(e,item._id)}></i></td>
-                    <td><i className="fa fa-remove" onClick={e=>this.remove(e,item._id)}></i></td>
+                    <td><i className="fa fa-remove" onClick={e=>this.toggleWarning(e,item._id,item.nom)}></i></td>
 
                   </tr>
                       );
@@ -181,6 +199,19 @@ class benevole extends Component {
                   }
                   </tbody>
                 </Table>
+
+                <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                       className={'modal-warning ' + this.props.className}>
+                  <ModalHeader toggle={this.toggleWarning}>Suppression Benevole</ModalHeader>
+                  <ModalBody>
+                    Voulez-vous vraiment supprimer le benevole <b>{this.state.nom} </b>!
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="warning" onClick={this.remove}>Supprimer</Button>{' '}
+                    <Button color="secondary" onClick={this.toggleWarningClose}>Annuler</Button>
+                  </ModalFooter>
+                </Modal>
+
                 <nav>
 
                   <Pagination>

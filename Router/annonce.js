@@ -1,6 +1,7 @@
 var express=require("express")
 var Router=express.Router()
 var annonceModel = require('../Models/annonceModel')
+var associationModel = require('../Models/associationModel')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 var fs = require("fs")
@@ -61,12 +62,13 @@ Router.post("/ajouter",upload.single('pieceJointe'), function (req,res) {
         pieceJointe: req.file.originalname, association: req.body.association,
         benevoles: req.body.benevoles});
 
-    annonce.save(function (err) {
+    annonce.save(function (err, data) {
         if(err){
             res.send({"state":"not ok","msg":"err:"+err});
         }
         else{
-            res.send({"state":"ok","msg":"Ajout annonce"});
+            //res.send({"state":"ok","msg":"Ajout annonce"});
+          res.send(data);
         }
     })
       }

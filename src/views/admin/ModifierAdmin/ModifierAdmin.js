@@ -24,6 +24,7 @@ import {
   InputGroupText,
   Label,
   Row,
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 
 class ModifierAdmin extends Component {
@@ -31,6 +32,7 @@ class ModifierAdmin extends Component {
   constructor(props) {
     super(props);
 
+    //this.toggleWarning = this.toggleWarning.bind(this);
     this.toggle = this.toggle.bind(this);
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
@@ -49,8 +51,15 @@ class ModifierAdmin extends Component {
       confirmedpassword:"",
       collapse: true,
       fadeIn: true,
-      timeout: 300
+      timeout: 300,
+      warning: false
     };
+  }
+
+  toggleWarningClose =()=> {
+    this.setState({
+      warning: !this.state.warning,
+    });
   }
 
   componentDidMount(){
@@ -110,19 +119,21 @@ class ModifierAdmin extends Component {
       const data={nom, prenom,password, username, email}
       axios.put("http://127.0.0.1:8000/admin/modifier/"+localStorage.getItem("idAdmin"),data,{headers: headers}).then(res=>{
         console.log(res.data)
-        /*if(res.data === ""){
-          alert("Vous devez remplissez tous les champs")
-        }
-        else
-        {
-          window.location.href="/#/home/association";
-        }*/
+        // if(res.data === ""){
+        //   alert("Vous devez remplissez tous les champs")
+        // }
+        // else
+        // {
+        //   window.location.href="/#/home/association";
+        // }
+        window.location.href="/#/home/association";
       })
     }
 
     else
     {
-      alert("confirmer votre password");
+      //alert("confirmer votre password");
+      this.toggleWarningClose();
     }
 
   }
@@ -140,7 +151,7 @@ class ModifierAdmin extends Component {
       <div className="animated fadeIn">
         <Row>
 
-          <Col xs="12" sm="6">
+          <Col xs="12" sm="12">
             <Card>
               <CardHeader>
                 <small>Modifier Informations</small>
@@ -170,18 +181,28 @@ class ModifierAdmin extends Component {
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="hf-password">Mot De Passe</Label>
-                  <Input type="password" id="hf-password" name="hf-password" placeholder="Password" autoComplete="current-password"
+                  <Input type="password" id="hf-password" name="hf-password" placeholder="Ancien / Nouveau Mot de passe" autoComplete="current-password"
                          onChange={evt=> this.setState({password: evt.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="hf-password2">Confirmed Mot De Passe</Label>
-                  <Input type="password" id="hf-password2" name="hf-password2" placeholder="Confirmed Password" autoComplete="current-password"
+                  <Label htmlFor="hf-password2">Confirmer Mot De Passe</Label>
+                  <Input type="password" id="hf-password2" name="hf-password2" placeholder="Confirmer votre mot de passe" autoComplete="current-password"
                          onChange={evt=> this.setState({confirmedpassword: evt.target.value})} />
                 </FormGroup>
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="sm" color="primary" onClick={this.handleEdit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                       className={'modal-warning ' + this.props.className}>
+                  <ModalHeader toggle={this.toggleWarning}>Confirmer Mot de passe</ModalHeader>
+                  <ModalBody>
+                    Voulez devez confirmer votre mot de passe !
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="warning" onClick={this.toggleWarningClose}>OK</Button>{' '}
+                  </ModalFooter>
+                </Modal>
               </CardFooter>
             </Card>
           </Col>

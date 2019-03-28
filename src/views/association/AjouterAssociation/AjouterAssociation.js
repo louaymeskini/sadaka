@@ -78,19 +78,48 @@ class AjouterAssociation extends Component {
     let isError = false;
 
     const errors = {
+      nomErr:"",
+      villeErr:"",
+      adresseErr:"",
       codePostaleErr:"",
       telErr:"",
       emailErr: "",
+      usernameErr:"",
       passwordErr: "",
+      fileErr: "",
     }
-
-    console.log("login ",this.state.login);
-    console.log("pws ",this.state.password);
-
-
+    //console.log("login ",this.state.login);
+    //console.log("pws ",this.state.password);
 
     const regex1=/^[a-zA-Z0-9._-]+$/;
+    const regexAdresse=/^\s*\S+(?:\s+\S+[a-zA-Z0-9])/;
+    const regexEmail=/[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}/igm;
+    const regexNom=/^[a-zA-Z]*$/;
     const regexNum=/[0-9]+/g;
+    const regexImg=/[\/.](gif|jpg|jpeg|tiff|png)$/i;
+
+    if(!regexImg.test(this.state.file['name'])){
+      isError = true;
+      errors.fileErr = "Veuillez verifier l\'Image de l'association";
+    }
+
+    if ((this.state.nom==="")||(this.state.codePostale.length < 2)||!regex1.test(this.state.nom)) {
+
+      isError = true;
+      errors.nomErr = "Veuillez verifier le Nom de l\'association";
+    }
+
+    if ((this.state.adresse==="")||(this.state.adresse.length < 4)||!regexAdresse.test(this.state.adresse)) {
+
+      isError = true;
+      errors.adresseErr = "Veuillez verifier l\'Adresse de l\'association";
+    }
+
+    if ((this.state.ville==="")||(this.state.ville.length < 3)||!regexNom.test(this.state.ville)) {
+
+      isError = true;
+      errors.villeErr = "Veuillez verifier la Ville de l\'association";
+    }
 
     if ((this.state.codePostale==="")||(this.state.codePostale.length > 4)||!regexNum.test(this.state.codePostale)) {
 
@@ -98,23 +127,28 @@ class AjouterAssociation extends Component {
       errors.codePostaleErr = "Veuillez verifier le Code Postale";
     }
 
-    if ((this.state.tel==="")||(this.state.tel.length > 9)||!regexNum.test(this.state.tel)) {
+    if ((this.state.tel==="")||(this.state.tel.length > 9)||(this.state.tel.length < 8)||!regexNum.test(this.state.tel)) {
 
       isError = true;
-      errors.telErr = "Veuillez verifier le numero de telephone";
+      errors.telErr = "Veuillez verifier le Numero de Telephone";
     }
 
-    if ((this.state.email==="")||(this.state.email.length > 15)||!regex1.test(this.state.email)) {
+    if ((this.state.email==="")||(this.state.email.length > 25)||!regexEmail.test(this.state.email)) {
 
       isError = true;
       errors.emailErr = "Veuillez verifier l\'Email du l\'association";
     }
 
-
-    if ((this.state.password==="")||(this.state.password.length > 20)||!regex1.test(this.state.password)) {
+    if ((this.state.username==="")||(this.state.username.length < 3)||!regex1.test(this.state.username)) {
 
       isError = true;
-      errors.passwordErr = "veuillez verifier le mot de passe du l'association";
+      errors.usernameErr = "Veuillez verifier le Username de l\'association";
+    }
+
+    if ((this.state.password==="")||(this.state.password.length > 20)||(this.state.password.length < 3)||!regex1.test(this.state.password)) {
+
+      isError = true;
+      errors.passwordErr = "Veuillez verifier le Mot de passe du l'association";
     }
 
 
@@ -147,6 +181,7 @@ console.log("okkkkkkk");
    console.log("token ",localStorage.getItem("token"));
     let err=this.validate();
     if(!err) {
+      //const  file = this.state.file;
       const nom = this.state.nom;
       const ville = this.state.ville;
       const codePostale = this.state.codePostale;
@@ -222,17 +257,41 @@ console.log("okkkkkkk");
                   <Label htmlFor="imgAsso">Logo Association</Label>
                   <Input type="file" id="imgAsso"
                          onChange={this.fileChangeHandler}/>
+                  {
+                    this.state.erreur===false ?
+                      <FormText>{this.state.fileErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.fileErr}</FormText>:null
+                  }
                 </FormGroup>
 
                 <FormGroup>
                   <Label htmlFor="company">Nom Association</Label>
                   <Input type="text" id="company" placeholder="Entrer le nom association"
                          value={this.state.nom} onChange={evt=> this.setState({nom: evt.target.value})}/>
+                  {
+                    this.state.erreur===false ?
+                      <FormText>{this.state.nomErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.nomErr}</FormText>:null
+                  }
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="street">Adresse</Label>
                   <Input type="text" id="street" placeholder="Entrer adresse association"
                          value={this.state.adresse} onChange={evt=> this.setState({adresse: evt.target.value})}/>
+                  {
+                    this.state.erreur===false ?
+                      <FormText>{this.state.adresseErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.adresseErr}</FormText>:null
+                  }
                 </FormGroup>
                 <FormGroup row className="my-0">
                   <Col xs="8">
@@ -240,6 +299,14 @@ console.log("okkkkkkk");
                       <Label htmlFor="city">Ville</Label>
                       <Input type="text" id="city" placeholder="Entrer ville du association"
                              value={this.state.ville} onChange={evt=> this.setState({ville: evt.target.value})}/>
+                      {
+                        this.state.erreur===false ?
+                          <FormText>{this.state.villeErr}</FormText>:null
+                      }
+                      {
+                        this.state.erreur===true ?
+                          <FormText id ="colorEr" className="help-block">{this.state.villeErr}</FormText>:null
+                      }
                     </FormGroup>
                   </Col>
                   <Col xs="4">
@@ -264,7 +331,7 @@ console.log("okkkkkkk");
                          value={this.state.tel} onChange={evt=> this.setState({tel: evt.target.value})}/>
                   {
                     this.state.erreur===false ?
-                      <FormText >{this.state.telErr}</FormText>:null
+                      <FormText>{this.state.telErr}</FormText>:null
                   }
                   {
                     this.state.erreur===true ?
@@ -278,11 +345,11 @@ console.log("okkkkkkk");
                          value={this.state.email} onChange={evt=> this.setState({email: evt.target.value})}/>
                   {
                     this.state.erreur===false ?
-                      <FormText >{this.state.emailErr}</FormText>:null
+                      <FormText>{this.state.emailErr}</FormText>:null
                   }
                   {
                     this.state.erreur===true ?
-                      <FormText id="color12">{this.state.emailErr}</FormText>:null
+                      <FormText id ="colorEr" className="help-block">{this.state.emailErr}</FormText>:null
                   }
                 </FormGroup>
 
@@ -290,20 +357,28 @@ console.log("okkkkkkk");
                   <Label htmlFor="username">Username Association</Label>
                   <Input type="text" id="username" name="username" placeholder="Entrer Username..."
                          value={this.state.username} onChange={evt=> this.setState({username: evt.target.value})}/>
+                  {
+                    this.state.erreur===false ?
+                      <FormText>{this.state.usernameErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.usernameErr}</FormText>:null
+                  }
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="hf-password">Mot De Passe Association</Label>
                   <Input type="password" id="hf-password" name="hf-password" placeholder="Enter mot de passe..." autoComplete="current-password"
                          value={this.state.password} onChange={evt=> this.setState({password: evt.target.value})} />
+                  {
+                    this.state.erreur===false ?
+                      <FormText >{this.state.passwordErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.passwordErr}</FormText>:null
+                  }
                 </FormGroup>
-                {
-                  this.state.erreur===false ?
-                    <FormText >{this.state.passwordErr}</FormText>:null
-                }
-                {
-                  this.state.erreur===true ?
-                    <FormText id="color12">{this.state.passwordErr}</FormText>:null
-                }
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="sm" color="primary" onClick={this.handlesubmit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>

@@ -36,10 +36,15 @@ class AjouterEvenement extends Component {
     this.toggleFade = this.toggleFade.bind(this);
     this.state = {
       titre:"",
+      titreErr:"",
       sujet:"",
+      sujetErr:"",
       ville:"",
+      villeErr:"",
       adresse:"",
+      adresseErr:"",
       date:"",
+      dateErr:"",
       association:"",
       collapse: true,
       fadeIn: true,
@@ -48,6 +53,76 @@ class AjouterEvenement extends Component {
       warning: false
     };
     //this.toggleWarning = this.toggleWarning.bind(this);
+  }
+
+  validate = () => {
+
+    let isError = false;
+
+    const errors = {
+      titreErr:"",
+      sujetErr:"",
+      villeErr:"",
+      adresseErr:"",
+      dateErr:""
+    }
+    //console.log("login ",this.state.login);
+    //console.log("pws ",this.state.password);
+
+    const regex1=/^[a-zA-Z0-9._-]+$/;
+    const regexAdresse=/^\s*\S+(?:\s+\S+[a-zA-Z0-9])/;
+    const regexEmail=/[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}/igm;
+    const regexNom=/^[a-zA-Z]*$/;
+    const regexNum=/[0-9]+/g;
+    const regexImg=/[\/.](gif|jpg|jpeg|tiff|png)$/i;
+
+    if ((this.state.titre==="")||(this.state.titre.length < 2)||!regex1.test(this.state.titre)) {
+
+      isError = true;
+      errors.titreErr = "Veuillez verifier le Titre de l\'evenement";
+    }
+
+    if ((this.state.sujet==="")||(this.state.sujet.length < 4)||!regexAdresse.test(this.state.sujet)) {
+
+      isError = true;
+      errors.sujetErr = "Veuillez verifier le Sujet de l\'evenement";
+    }
+
+    if ((this.state.ville==="")||(this.state.ville.length < 3)||!regexNom.test(this.state.ville)) {
+
+      isError = true;
+      errors.villeErr = "Veuillez verifier la Ville de l\'evenement";
+    }
+
+    if ((this.state.adresse==="")||(this.state.adresse.length < 4)||!regexAdresse.test(this.state.adresse)) {
+
+      isError = true;
+      errors.adresseErr = "Veuillez verifier l\'Adresse de l\'evenement";
+    }
+
+    if (this.state.date==="") {
+
+      isError = true;
+      errors.dateErr = "Veuillez verifier la Date de l\'evenement";
+    }
+
+
+
+    if (isError) {
+      this.setState({
+        ...this.state,
+        ...errors
+      })
+    }
+
+    console.log("errrr ", isError)
+
+
+    this.setState({
+      erreur:isError
+    })
+
+    return isError;
   }
 
   toggleWarningClose =()=> {
@@ -61,50 +136,54 @@ class AjouterEvenement extends Component {
     console.log("id Association: ", localStorage.getItem("idAssociation"));
   }
 
-  handlesubmit(){
+  handlesubmit() {
 
-console.log("okkkkkkk");
-    console.log("state: ",this.state);
-   console.log("token ",localStorage.getItem("token"));
-   //console.log("id Association: ", localStorage.getItem("idAssociation"));
+    console.log("okkkkkkk");
+    console.log("state: ", this.state);
+    console.log("token ", localStorage.getItem("token"));
+    //console.log("id Association: ", localStorage.getItem("idAssociation"));
 
-    const titre =this.state.titre;
-    const sujet =this.state.sujet;
-    const ville =this.state.ville;
-    const adresse =this.state.adresse;
-    const date =this.state.date;
-    const association =this.state.association;
+    let err = this.validate();
+    if (!err) {
+      const titre = this.state.titre;
+      const sujet = this.state.sujet;
+      const ville = this.state.ville;
+      const adresse = this.state.adresse;
+      const date = this.state.date;
+      const association = this.state.association;
 
 
-    if (titre === ""||sujet===""||ville===""||
-      adresse===""||date==="")
-    {
-      //alert("no data");
-      this.toggleWarningClose();
-    }
-    else
-    {
-      const headers={
-        'x-access-token':localStorage.getItem("token")
+      if (titre === "" || sujet === "" || ville === "" ||
+        adresse === "" || date === "") {
+        //alert("no data");
+        this.toggleWarningClose();
+      }
+      else {
+        const headers = {
+          'x-access-token': localStorage.getItem("token")
+        }
+
+        const association = localStorage.getItem("idAssociation");
+        const data = {titre, sujet, ville, adresse, date, association}
+
+        axios.post("http://127.0.0.1:8000/evenement/ajouter", data, {headers: headers})
+          .then(res => {
+            console.log(res.data)
+            fetch("http://127.0.0.1:8000/association/ajouter/" + localStorage.getItem("idAssociation") + "/evenement/" + res.data._id, {
+              method: 'PUT',
+              headers: headers
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log("pushed = true", data);
+              })
+
+            window.location.href = "/#/home/evenement";
+
+          })
       }
 
-      const association=localStorage.getItem("idAssociation");
-      const  data={titre, sujet, ville, adresse, date, association}
-
-      axios.post("http://127.0.0.1:8000/evenement/ajouter",data,{headers: headers})
-        .then(res=>{
-        console.log(res.data)
-          fetch("http://127.0.0.1:8000/association/ajouter/"+localStorage.getItem("idAssociation")+"/evenement/"+res.data._id, {method: 'PUT', headers:headers})
-            .then(response => response.json())
-            .then(data => {
-              console.log("pushed = true",data);
-            })
-
-          window.location.href="/#/home/evenement";
-
-      })
     }
-
   }
 
   toggle() {
@@ -134,11 +213,27 @@ console.log("okkkkkkk");
                   <Label htmlFor="company">Titre Evenement</Label>
                   <Input type="text" id="company" placeholder="Entrer le titre de evenement"
                          value={this.state.titre} onChange={evt=> this.setState({titre: evt.target.value})}/>
+                  {
+                    this.state.erreur===false ?
+                      <FormText>{this.state.titreErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.titreErr}</FormText>:null
+                  }
                 </FormGroup>
                 <FormGroup>
                   <Label htmlFor="textarea-input">Sujet</Label>
                   <Input type="textarea" id="textarea-input" name="textarea-input" placeholder="Entrer le sujet de evenement" rows="4"
                          value={this.state.sujet} onChange={evt=> this.setState({sujet: evt.target.value})}/>
+                  {
+                    this.state.erreur===false ?
+                      <FormText>{this.state.sujetErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.sujetErr}</FormText>:null
+                  }
                 </FormGroup>
 
 
@@ -146,12 +241,28 @@ console.log("okkkkkkk");
                       <Label htmlFor="city">Ville</Label>
                       <Input type="text" id="city" placeholder="Entrer ville du evenement"
                              value={this.state.ville} onChange={evt=> this.setState({ville: evt.target.value})}/>
+                      {
+                        this.state.erreur===false ?
+                          <FormText>{this.state.villeErr}</FormText>:null
+                      }
+                      {
+                        this.state.erreur===true ?
+                          <FormText id ="colorEr" className="help-block">{this.state.villeErr}</FormText>:null
+                      }
                     </FormGroup>
 
                     <FormGroup>
                       <Label htmlFor="street">Adresse</Label>
                       <Input type="text" id="street" placeholder="Entrer adresse evenement"
                              value={this.state.adresse} onChange={evt=> this.setState({adresse: evt.target.value})}/>
+                      {
+                        this.state.erreur===false ?
+                          <FormText>{this.state.adresseErr}</FormText>:null
+                      }
+                      {
+                        this.state.erreur===true ?
+                          <FormText id ="colorEr" className="help-block">{this.state.adresseErr}</FormText>:null
+                      }
                     </FormGroup>
 
 
@@ -159,6 +270,14 @@ console.log("okkkkkkk");
                   <Label htmlFor="date-input">Date Evenement</Label>
                   <Input type="date" id="date-input" name="date-input" placeholder="date"
                          value={this.state.date} onChange={evt=> this.setState({date: evt.target.value})}/>
+                  {
+                    this.state.erreur===false ?
+                      <FormText>{this.state.dateErr}</FormText>:null
+                  }
+                  {
+                    this.state.erreur===true ?
+                      <FormText id ="colorEr" className="help-block">{this.state.dateErr}</FormText>:null
+                  }
                 </FormGroup>
 
               </CardBody>

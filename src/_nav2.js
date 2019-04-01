@@ -53,7 +53,7 @@ export default {
       children: [
         {
           name: 'Modifier Association',
-          url: '/home/association/profile',
+          url: '/home/profile',
           icon: 'icon-settings',
         }
       ]

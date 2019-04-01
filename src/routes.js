@@ -48,7 +48,7 @@ const AjouterEvenement = React.lazy(() => import('./views/evenement/AjouterEvene
 const evenement = React.lazy(() => import('./views/evenement/evenement'));
 const annonce = React.lazy(() => import('./views/annonce/annonce'));
 const AjouterAnnonce = React.lazy(() => import('./views/annonce/AjouterAnnonce/AjouterAnnonce'));
-const ModifierAssociation2 = React.lazy(() => import('./views/association/ModifierAssociation2/ModifierAssociation2'));
+const profileAssociation = React.lazy(() => import('./views/association/ModifierAssociation2/ModifierAssociation2'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -104,7 +104,7 @@ const routes = [
   { path: '/home/evenement', exact: true, name: 'Liste Evenements', component: evenement },
   { path: '/home/annonce', exact: true, name: 'Liste Annonces', component: annonce },
   { path: '/home/annonce/ajouter', exact: true, name: 'Ajouter Annonce', component: AjouterAnnonce },
-  { path: '/home/association/profile', exact: true, name: 'Modifier Association', component: ModifierAssociation2 },
+  { path: '/home/profile', exact: true, name: 'Modifier Association', component: profileAssociation },
 
 ];
 

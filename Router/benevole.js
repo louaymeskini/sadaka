@@ -97,9 +97,7 @@ Router.put("/modifier/:id",validateUser, function (req, res) {
         nom: req.body.nom, prenom: req.body.prenom,
         sexe: req.body.sexe, ville: req.body.ville, adresse: req.body.adresse,
         codePostale: req.body.codePostale, tel: req.body.tel,
-        email: req.body.email, username: req.body.username, password: bcrypt.hashSync(req.body.password,saltRounds),
-        associations: req.body.associations, evenements: req.body.evenements,
-        annonces: req.body.annonces}, function (err) {
+        email: req.body.email, username: req.body.username, password: bcrypt.hashSync(req.body.password,saltRounds)}, function (err) {
         if (err)
             res.send({"state": "not ok", "msg": "err:" + err});
         else

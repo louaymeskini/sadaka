@@ -38,9 +38,10 @@ class Login extends Component {
 
 
     const regex1=/^[a-zA-Z0-9._-]+$/;
+    const regexEmail=/[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}/igm;
 
 
-    if ((this.state.email==="")||(this.state.email.length > 15)||!regex1.test(this.state.email)) {
+    if ((this.state.email==="")||(this.state.email.length > 25)||!regexEmail.test(this.state.email)) {
 
       isError = true;
       errors.emailErr = "Veuillez verifier votre login";
@@ -143,22 +144,13 @@ class Login extends Component {
                                value={this.state.email} onChange={evt=> this.setState({email: evt.target.value})}/>
                       </InputGroup>
                     {
-
                       this.state.erreur===false ?
-
                         <FormText >{this.state.emailErr}</FormText>:null
-
                     }
-
-
                     {
-
                       this.state.erreur===true ?
-
-                        <FormText id="color12">{this.state.emailErr}</FormText>:null
-
+                        <FormText id ="colorEr" className="help-block">{this.state.emailErr}</FormText>:null
                     }
-
                     <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -169,20 +161,12 @@ class Login extends Component {
                                value={this.state.password} onChange={evt=> this.setState({password: evt.target.value})}/>
                       </InputGroup>
                     {
-
                       this.state.erreur===false ?
-
                         <FormText >{this.state.passwordErr}</FormText>:null
-
                     }
-
-
                     {
-
                       this.state.erreur===true ?
-
-                        <FormText id="color12">{this.state.passwordErr}</FormText>:null
-
+                        <FormText id ="colorEr" className="help-block">{this.state.passwordErr}</FormText>:null
                     }
                       <Row>
                         <Col xs="6">

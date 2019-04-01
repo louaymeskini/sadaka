@@ -104,7 +104,7 @@ class ModifierAssociation extends Component {
     const regexNum=/[0-9]+/g;
     const regexImg=/[\/.](gif|jpg|jpeg|tiff|png)$/i;
 
-    if(this.state.file['name']===""){
+    if(this.state.association.imageAssociation!=""){
       isError = false;
     }
     else {
@@ -194,14 +194,14 @@ class ModifierAssociation extends Component {
     if ((this.state.password != "") && (this.state.password === this.state.confirmedpassword)) {
       isError = false;
     }
-      else{
-      if ((this.state.password==="")||(this.state.password.length > 20)||(this.state.password.length < 3)||!regex1.test(this.state.password)) {
+    else{
+      if ((this.state.password==="")|| (this.state.password != this.state.confirmedpassword) ||(this.state.password.length > 20)||(this.state.password.length < 3)||!regex1.test(this.state.password)) {
 
         //isError = true;
         this.toggleWarningClose();
         //errors.passwordErr = "Veuillez verifier le Mot de passe du l'association";
       }
-      }
+    }
 
 
 

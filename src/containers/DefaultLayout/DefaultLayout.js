@@ -24,13 +24,47 @@ const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
+
+const fakeAuth = {
+  isAuthenticated: false,
+  authenticate(cb) {
+
+    this.isAuthenticated = true
+    setTimeout(cb, 100)
+  },
+
+  signout(cb) {
+    this.isAuthenticated = false
+    setTimeout(cb, 100)
+  }
+}
+
 class DefaultLayout extends Component {
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
+  constructor(){
+    super();
+    this.state={
+      redirectToReferrer: true
 
-  signOut(e) {
-    e.preventDefault()
-    this.props.history.push('/')
+    }
+  }
+
+
+  signOut() {
+    fakeAuth.authenticate(() => {
+
+      this.setState(() => ({
+        redirectToReferrer: false
+      }))
+    })
+
+
+    localStorage.removeItem("token12");
+    localStorage.removeItem("token");
+    window.location.reload();
+
+   // this.props.history.push('/')
   }
 
   render() {
@@ -39,7 +73,10 @@ class DefaultLayout extends Component {
         <div className="app">
           <AppHeader fixed>
             <Suspense  fallback={this.loading()}>
-              <DefaultHeader onLogout={e=>this.signOut(e)}/>
+              <DefaultHeader onLogout={() => {
+                this.signOut()
+              }}
+                />
             </Suspense>
           </AppHeader>
           <div className="app-body">
@@ -93,7 +130,10 @@ class DefaultLayout extends Component {
         <div className="app">
           <AppHeader fixed>
             <Suspense  fallback={this.loading()}>
-              <DefaultHeader onLogout={e=>this.signOut(e)}/>
+              <DefaultHeader onLogout={() => {
+                this.signOut()
+              }}
+              />
             </Suspense>
           </AppHeader>
           <div className="app-body">
@@ -123,7 +163,7 @@ class DefaultLayout extends Component {
                           )} />
                       ) : (null);
                     })}
-                    <Redirect from="/" to="/home/association" />
+                    <Redirect from="/" to="/home/benevoles/membre" />
                   </Switch>
                 </Suspense>
               </Container>

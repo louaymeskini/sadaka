@@ -298,7 +298,7 @@ handleChangeGenre(evt){
             this.toggleWarningClose();
           }
           else {
-            window.location.href = "/#/home/benevole";
+            window.location.href = "/home/benevole";
           }
         })
       }

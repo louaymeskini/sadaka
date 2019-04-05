@@ -227,7 +227,7 @@ class ModifierAdmin extends Component {
           // {
           //   window.location.href="/#/home/association";
           // }
-          window.location.href = "/#/home/association";
+          window.location.href = "/home/association";
         })
       }
 

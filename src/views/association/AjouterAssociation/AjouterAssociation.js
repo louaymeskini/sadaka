@@ -224,7 +224,7 @@ console.log("okkkkkkk");
           .then(res => {
             console.log(res.data)
 
-            window.location.href = "/#/home/association";
+            window.location.href = "/home/association";
 
           })
       }

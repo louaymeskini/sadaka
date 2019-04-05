@@ -342,7 +342,7 @@ class ModifierAssociation2 extends Component {
 
             }
             console.log("data", data);
-            window.location.href = "/#/home/benevole/membre";
+            window.location.href = "/home/benevoles/membre";
 
           })
       }

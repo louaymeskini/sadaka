@@ -3,6 +3,19 @@ import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row ,FormText, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import  axios from 'axios';
 
+////session
+const fakeAuth = {
+  isAuthenticated: false,
+  authenticate(cb) {
+    this.isAuthenticated = true
+    setTimeout(cb, 100)
+  },
+  signout(cb) {
+    this.isAuthenticated = false
+    setTimeout(cb, 100)
+  }
+}
+
 class Login extends Component {
 
   constructor(props){
@@ -12,7 +25,8 @@ class Login extends Component {
       emailErr:"",
       password:"",
       passwordErr:"",
-      warning: false
+      warning: false,
+      redirectToReferrer: "0",
     }
     //this.toggleWarning = this.toggleWarning.bind(this);
   }
@@ -102,13 +116,43 @@ class Login extends Component {
 
           localStorage.setItem("idAdmin",res.data['data']['user']['_id']);
 
-          window.location.href="/#/home/association";
+        localStorage.setItem("token12", "true");
+
+
+          ///session
+
+          fakeAuth.authenticate(() => {
+
+            this.setState(() => ({
+              redirectToReferrer: "1"
+            }))
+
+          })
+
+
+          //  window.location.href="/#/home/association";
 
         }
         else if(localStorage.getItem("type")==="association"){
           localStorage.setItem("idAssociation",res.data['data']['user']['_id']);
+          localStorage.setItem("imageAssociation",res.data['data']['user']['imageAssociation'])
           console.log("id association: ",localStorage.getItem("idAssociation"));
-          window.location.href="/#/home/benevole/membre";
+          //console.log("img association: ",localStorage.getItem("imageAssociation"));
+       //   window.location.href="/#/home/benevoles/membre";
+
+        localStorage.setItem("token12", "true");
+
+
+          ///session
+
+          fakeAuth.authenticate(() => {
+
+            this.setState(() => ({
+              redirectToReferrer: "2"
+            }))
+
+          })
+
 
         }
         else{
@@ -123,6 +167,8 @@ class Login extends Component {
   }
 
   render() {
+    const {redirectToReferrer} = this.state;
+
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -170,7 +216,10 @@ class Login extends Component {
                     }
                       <Row>
                         <Col xs="6">
-                          <Button color="primary" className="px-4" onClick={this.login.bind(this)}>Login</Button>
+                          <Button color="primary" className="px-4" onClick={() => {
+                            this.props.hettodo(redirectToReferrer);
+                            this.login()
+                          }}>Login</Button>
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>

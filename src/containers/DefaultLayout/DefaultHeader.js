@@ -50,9 +50,17 @@ class DefaultHeader extends Component {
             <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
           </NavItem>
           <AppHeaderDropdown direction="down">
+            {
+              localStorage.getItem("type")==="admin" ?
+                <DropdownToggle nav>
+                  <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="louay.meskini@gmail.com" />
+                </DropdownToggle>:null
+            }
+            { localStorage.getItem("type")==="association" ?
             <DropdownToggle nav>
-              <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-            </DropdownToggle>
+              <img src={'http://127.0.0.1:8000/association/img/'+localStorage.getItem("imageAssociation")} className="img-avatar" alt={localStorage.getItem("imageAssociation")} />
+            </DropdownToggle>:null
+            }
             <DropdownMenu right style={{ right: 'auto' }}>
               <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
             </DropdownMenu>

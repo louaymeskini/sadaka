@@ -349,7 +349,7 @@ class ModifierAssociation extends Component {
 
             }
             console.log("data", data);
-            window.location.href = "/#/home/association";
+            window.location.href = "/home/association";
 
           })
       }

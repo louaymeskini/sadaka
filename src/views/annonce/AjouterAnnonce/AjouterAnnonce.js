@@ -171,7 +171,7 @@ class AjouterAnnonce extends Component {
               })
             //this.setState({currentId:res.data._id});
             //console.log("current id: ",res.data._id)
-            window.location.href = "/#/home/annonce";
+            window.location.href = "/home/annonce";
           })
 
         //var currentId = res.data._id;

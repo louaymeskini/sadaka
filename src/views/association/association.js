@@ -112,7 +112,7 @@ const headers={
     e.preventDefault();
     console.log("id: ",id);
     localStorage.setItem("idAssociationAdmin",id);
-    window.location.href="/#/home/association/modifier";
+    window.location.href="/home/association/modifier";
   }
 
   render() {

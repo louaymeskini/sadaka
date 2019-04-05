@@ -178,7 +178,7 @@ class AjouterEvenement extends Component {
                 console.log("pushed = true", data);
               })
 
-            window.location.href = "/#/home/evenement";
+            window.location.href = "/home/evenement";
 
           })
       }

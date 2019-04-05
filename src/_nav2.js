@@ -2,12 +2,12 @@ export default {
   items: [
     {
       name: 'Benevoles Membres',
-      url: '/home/benevole',
+      url: '/home/benevoles/membre',
       icon: 'icon-user',
       children: [
         {
           name: 'Liste Benevoles',
-          url: '/home/benevole/membre',
+          url: '/home/benevoles/membre',
           icon: 'icon-user',
         }
         ]

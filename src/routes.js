@@ -99,7 +99,7 @@ const routes = [
   { path: '/home/benevole', exact: true, name: 'Liste Benevoles', component: benevole },
   { path: '/home/benevole/modifier', exact: true, name: 'Modifier Benevole', component: ModifierBenevole },
   { path: '/home/admin/modifier', exact: true, name: 'Modifier Administrateur', component: ModifierAdmin },
-  { path: '/home/benevole/membre', exact: true, name: 'benevole Membre', component: benevoleMembre },
+  { path: '/home/benevoles/membre', exact: true, name: 'benevoles Membre', component: benevoleMembre },
   { path: '/home/evenement/ajouter', exact: true, name: 'Ajouter Evenement', component: AjouterEvenement },
   { path: '/home/evenement', exact: true, name: 'Liste Evenements', component: evenement },
   { path: '/home/annonce', exact: true, name: 'Liste Annonces', component: annonce },

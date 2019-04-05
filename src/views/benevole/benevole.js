@@ -112,7 +112,7 @@ class benevole extends Component {
     e.preventDefault();
     console.log("id: ",id);
     localStorage.setItem("idBenevole",id);
-    window.location.href="/#/home/benevole/modifier";
+    window.location.href="/home/benevole/modifier";
   }
 
   render() {

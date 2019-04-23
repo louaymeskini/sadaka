@@ -1,22 +1,43 @@
-import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
-let prev  = 0;
-let next  = 0;
-let last  = 0;
+import React, {Component} from 'react';
+import {
+  Badge,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Row,
+  Table,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Button
+} from 'reactstrap';
+
+let prev = 0;
+let next = 0;
+let last = 0;
 let first = 0;
 
 class benevoleMembre extends Component {
 
-  constructor(){
+  constructor() {
     super();
-    this.state={
-      benevoles:[],
-      benevoles1:[],
+    this.state = {
+      benevoles: [],
+      benevoles1: [],
       currentPage: 1,
       todosPerPage: 5,
       warning: false,
-      id:"",
-      nom:""
+      id: "",
+      nom: "",
+      Accepter: [],
+      Accepter1: [],
+      idConfirme:[],
+      idNonConfirme:[]
     }
     this.handleClick = this.handleClick.bind(this);
 
@@ -40,7 +61,7 @@ class benevoleMembre extends Component {
     event.preventDefault();
 
     this.setState({
-      currentPage:last
+      currentPage: last
     });
   }
 
@@ -49,91 +70,160 @@ class benevoleMembre extends Component {
     event.preventDefault();
 
     this.setState({
-      currentPage:1
+      currentPage: 1
     });
   }
 
-  toggleWarning(e,id,nom) {
+  toggleWarning(e, id, nom) {
     e.preventDefault();
-    console.log("id ",id);
+    console.log("id ", id);
     this.setState({
       warning: !this.state.warning,
     });
-    this.setState({id:id})
-    this.setState({nom:nom})
+    this.setState({id: id})
+    this.setState({nom: nom})
   }
 
-  toggleWarningClose =()=> {
+  toggleWarningClose = () => {
     this.setState({
       warning: !this.state.warning,
     });
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.getOneAssociation();
   }
 
-getOneAssociation(){
-  console.log("token ",localStorage.getItem("token"));
-  const headers={
-    "content-type":"application/json",
-    'x-access-token':localStorage.getItem("token")
-  }
-  fetch("http://localhost:8000/association/"+localStorage.getItem("idAssociation"), {method: 'GET',headers:headers })
-    .then(response => response.json())
-    .then(data =>{
-      console.log("association: ",data);
-
-      for(var i=0; i<data['benevoles'].length ; i++){
-        console.log(data['benevoles'][i]);
-        //this.getOneBenevole(data['benevoles'][i]);
-        this.state.benevoles.push(data['benevoles'][i]);
-        //this.setState({benevoles1:this.state.benevoles});
-      }
-      this.setState({benevoles1:this.state.benevoles});
-      console.log("benevole1 ",this.state.benevoles1);
-
+  getOneAssociation() {
+    let accept=[];
+    console.log("id ass ", localStorage.getItem("idAssociation"));
+    const headers = {
+      "content-type": "application/json",
+      'x-access-token': localStorage.getItem("token")
+    }
+    fetch("http://localhost:8000/benevole/trouver/association/" + localStorage.getItem("idAssociation"), {
+      method: 'GET',
+      headers: headers
     })
-}
+      .then(response => response.json())
+      .then(data => {
+        console.log("association: ", data);
+        console.log("id bene: ", data[0]);
+        fetch("http://localhost:8000/association/" + localStorage.getItem("idAssociation"), {
+          method: 'GET',
+          headers: headers
+        })
+          .then(response => response.json())
+          .then(data1 => {
+            console.log("beneveoleAss ", data1);
+            if (data1['benevoles'].length === 0) {
+              accept.push("0")
 
-  remove=(e)=>{
+            }
+            else {
+              var found;
+              for (var k = 0; k < data.length; k++) {
+                found = false;
+                for (var j = 0; j < data1['benevoles'].length; j++)
+                  if (data[k]['_id'] === (data1['benevoles'][j]['_id'])) {
+                    accept.push("1");
+                    found = true;
+                  }
+                if (!found) {
+                  accept.push("0");
+                }
+
+              }
+            }
+
+            console.log("accepter ", accept)
+            this.setState({Accepter1: accept})
+
+          })
+        console.log(this.state.benevoles1)
+        this.setState({benevoles1: data});
+
+      })
+  }
+
+  removeAncien = (e) => {
     e.preventDefault();
     //console.log("id: ",id);
-    const headers={
-      "content-type":"application/json",
-      "x-access-token":localStorage.getItem("token")
+    const headers = {
+      "content-type": "application/json",
+      "x-access-token": localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/supprimer/"+localStorage.getItem("idAssociation")+"/benevole/"+this.state.id, {method: 'PUT', headers:headers})
+    fetch("http://127.0.0.1:8000/association/supprimer/" + localStorage.getItem("idAssociation") + "/benevole/" + this.state.id, {
+      method: 'PUT',
+      headers: headers
+    })
       .then(response => response.json())
-      .then(data =>{
+      .then(data => {
         console.log(data);
-        if (data['state']==="non"){
+        if (data['state'] === "non") {
           alert("Benevole membre n est pas supprime");
         }
-        else{
+        else {
           //alert("suppression effectue");
           this.getOneAssociation();
           this.toggleWarningClose();
-       //   window.location.reload();
+          //   window.location.reload();
         }
       })
   }
 
-/*getOneBenevole(id)
-{
-  const headers={
-    "content-type":"application/json",
-    'x-access-token':localStorage.getItem("token")
-  }
-  fetch("http://localhost:8000/benevole/"+id, {method: 'GET',headers:headers })
-    .then(response => response.json())
-    .then(data =>{
-      console.log("benevoles : ",data);
-      this.state.benevoles.push(data);
+  remove = (e) => {
+    e.preventDefault();
+    //console.log("id: ",id);
+    const headers = {
+      "content-type": "application/json",
+      "x-access-token": localStorage.getItem("token")
+    }
+    fetch("http://127.0.0.1:8000/association/supprimer/"+localStorage.getItem("idAssociation") + "/benevole/" + this.state.id, {
+      method: 'PUT',
+      headers: headers
     })
-     this.setState({benevoles1:this.state.benevoles});
-}*/
+      .then(response => response.json())
+      .then(data1 => {
+        console.log(data1);
+        fetch("http://127.0.0.1:8000/benevole/supprimer/"+this.state.id +"/association/"+localStorage.getItem("idAssociation"), {
+          method: 'PUT',
+          headers: headers
+        })
+          .then(response => response.json())
+          .then(data => {
+        if (data['state'] === "non") {
+          alert("Benevole membre n est pas supprime");
+        }
+        else {
+          //alert("suppression effectue");
+          this.getOneAssociation();
+          this.toggleWarningClose();
+          //   window.location.reload();
+        }
+          })
+      })
+  }
 
+  accepter(e, id) {
+    e.preventDefault();
+    const headers = {
+      "content-type": "application/json",
+      'x-access-token': localStorage.getItem("token")
+    }
+    fetch("http://localhost:8000/association/ajouter/" + localStorage.getItem("idAssociation") + "/benevole/" + id, {
+      method: 'PUT',
+      headers: headers
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("benevoles : ", data);
+        this.setState({Accepter:""});
+        this.setState({Accepter1:""});
+        //this.getOneAssociation()
+       window.location.reload();
+      })
+  }
 
   render() {
 
@@ -156,7 +246,6 @@ getOneAssociation(){
     next = (last === currentPage) ? currentPage : currentPage + 1;
 
 
-
     // Logic for displaying page numbers
 
     let pageNumbers = [];
@@ -164,7 +253,7 @@ getOneAssociation(){
     for (let i = 1; i <= last; i++) {
       pageNumbers.push(i);
     }
-
+    console.log("inex " ,this.state.Accepter1[0]);
     return (
       <div className="animated fadeIn">
 
@@ -187,33 +276,51 @@ getOneAssociation(){
                     <th>Code Postale</th>
                     <th>Telephone</th>
                     <th>Email</th>
+                    <th>Accepter</th>
                     <th scope="col">Supprimer</th>
                   </tr>
                   </thead>
                   <tbody>
                   {
 
-                    currentTodos.map((item,index) =>{
+                    currentTodos.map((item, index) => {
 
-                      return(
+                      return (
 
                         <tr key={index}>
-                    <td>{item.nom}</td>
-                    <td>{item.prenom}</td>
-                    <td>{item.sexe}</td>
-                    <td>{item.ville}</td>
-                    <td>{item.adresse}</td>
-                    <td>{item.codePostale}</td>
-                    <td>{item.tel}</td>
-                    <td>{item.email}</td>
-                    <td><i className="fa fa-remove" onClick={e=>this.toggleWarning(e,item._id,item.nom)}></i></td>
-
-                  </tr>
-                          );
-
-                          })
-
+                          <td>{item.nom}</td>
+                          <td>{item.prenom}</td>
+                          <td>{item.sexe}</td>
+                          <td>{item.ville}</td>
+                          <td>{item.adresse}</td>
+                          <td>{item.codePostale}</td>
+                          <td>{item.tel}</td>
+                          <td>{item.email}</td>
+                          {
+                            this.state.Accepter1[index]==="0"?
+                            <td>
+                              <button><i className="fa fa-calendar-check-o fa"
+                                         onClick={e => this.accepter(e, item._id)}></i></button>
+                            </td>:null
                           }
+
+                          {
+                            this.state.Accepter1[index]==="1"?
+                            <td>
+                              <button disabled> <i className="fa fa-calendar-check-o fa"></i></button>
+                            </td>:null
+                          }
+
+                          <td><i className="fa fa-remove" onClick={e => this.toggleWarning(e, item._id, item.nom)}></i>
+                          </td>
+
+
+                        </tr>
+                      );
+
+                    })
+
+                  }
                   </tbody>
                 </Table>
 
@@ -233,19 +340,19 @@ getOneAssociation(){
                   <Pagination>
 
                     <PaginationItem>
-                      { prev === 0 ? <PaginationLink disabled>First</PaginationLink> :
+                      {prev === 0 ? <PaginationLink disabled>First</PaginationLink> :
                         <PaginationLink onClick={this.handleFirstClick} id={prev} href={prev}>First</PaginationLink>
                       }
                     </PaginationItem>
                     <PaginationItem>
-                      { prev === 0 ? <PaginationLink disabled>Prev</PaginationLink> :
+                      {prev === 0 ? <PaginationLink disabled>Prev</PaginationLink> :
                         <PaginationLink onClick={this.handleClick} id={prev} href={prev}>Prev</PaginationLink>
                       }
                     </PaginationItem>
                     {
-                      pageNumbers.map((number,i) =>
-                        <Pagination key= {i}>
-                          <PaginationItem active = {pageNumbers[currentPage-1] === (number) ? true : false} >
+                      pageNumbers.map((number, i) =>
+                        <Pagination key={i}>
+                          <PaginationItem active={pageNumbers[currentPage - 1] === (number) ? true : false}>
                             <PaginationLink onClick={this.handleClick} href={number} key={number} id={number}>
                               {number}
                             </PaginationLink>
@@ -256,14 +363,16 @@ getOneAssociation(){
                     <PaginationItem>
                       {
                         currentPage === last ? <PaginationLink disabled>Next</PaginationLink> :
-                          <PaginationLink onClick={this.handleClick} id={pageNumbers[currentPage]} href={pageNumbers[currentPage]}>Next</PaginationLink>
+                          <PaginationLink onClick={this.handleClick} id={pageNumbers[currentPage]}
+                                          href={pageNumbers[currentPage]}>Next</PaginationLink>
                       }
                     </PaginationItem>
 
                     <PaginationItem>
                       {
                         currentPage === last ? <PaginationLink disabled>Last</PaginationLink> :
-                          <PaginationLink onClick={this.handleLastClick} id={pageNumbers[currentPage]} href={pageNumbers[currentPage]}>Last</PaginationLink>
+                          <PaginationLink onClick={this.handleLastClick} id={pageNumbers[currentPage]}
+                                          href={pageNumbers[currentPage]}>Last</PaginationLink>
                       }
                     </PaginationItem>
                   </Pagination>

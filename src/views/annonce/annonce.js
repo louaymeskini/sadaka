@@ -180,7 +180,7 @@ const headers={
                     <th>Titre Annonce</th>
                     <th>Sujet</th>
                     <th>Piece Jointe</th>
-                    <th scope="col">Remove</th>
+                    <th scope="col">Supprimer</th>
                   </tr>
                   </thead>
                   <tbody>

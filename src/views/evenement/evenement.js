@@ -181,7 +181,7 @@ const headers={
                     <th>Ville</th>
                     <th>Adresse</th>
                     <th>Date</th>
-                    <th scope="col">Remove</th>
+                    <th scope="col">Supprimer</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -196,7 +196,7 @@ const headers={
                     <td>{item.sujet}</td>
                     <td>{item.ville}</td>
                     <td>{item.adresse}</td>
-                    <td>{item.date}</td>
+                    <td>{item.date.substring(0, 10)}</td>
                     <td><i className="fa fa-remove" onClick={e=>this.toggleWarning(e,item._id,item.titre)}></i></td>
 
                   </tr>

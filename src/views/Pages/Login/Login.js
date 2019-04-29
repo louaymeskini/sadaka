@@ -178,8 +178,8 @@ class Login extends Component {
                 <Card className="p-4">
                   <CardBody>
 
-                      <h1>Login</h1>
-                      <p className="text-muted">Sign In to your account</p>
+                      <h1>Connecter</h1>
+                      <p className="text-muted">Connecter à votre compte</p>
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -218,11 +218,11 @@ class Login extends Component {
                         <Col xs="6">
                           <Button color="primary" className="px-4" onClick={() => {
                             this.props.hettodo(redirectToReferrer);
-                            this.login()
+                            this.login();
                           }}>Login</Button>
                         </Col>
                         <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Forgot password?</Button>
+                          <Button color="link" className="px-0">Mot de passe oublié?</Button>
                         </Col>
                       </Row>
 

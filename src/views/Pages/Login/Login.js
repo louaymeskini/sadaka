@@ -94,7 +94,7 @@ class Login extends Component {
     let err=this.validate();
 
     if(!err){
-      axios.post("http://localhost:8000/auth", {
+      axios.post("https://sadaka.herokuapp.com/auth", {
         email:this.state.email,
         password:this.state.password
       }).then(res=>{
@@ -203,7 +203,7 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="password" placeholder="Password" autoComplete="current-password"
+                        <Input type="password" placeholder="Mot de passe" autoComplete="current-password"
                                value={this.state.password} onChange={evt=> this.setState({password: evt.target.value})}/>
                       </InputGroup>
                     {
@@ -219,10 +219,7 @@ class Login extends Component {
                           <Button color="primary" className="px-4" onClick={() => {
                             this.props.hettodo(redirectToReferrer);
                             this.login();
-                          }}>Login</Button>
-                        </Col>
-                        <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Mot de passe oublié?</Button>
+                          }}>Connecter</Button>
                         </Col>
                       </Row>
 

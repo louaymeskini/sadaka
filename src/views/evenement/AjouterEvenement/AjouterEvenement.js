@@ -76,7 +76,7 @@ class AjouterEvenement extends Component {
     const regexNum=/[0-9]+/g;
     const regexImg=/[\/.](gif|jpg|jpeg|tiff|png)$/i;
 
-    if ((this.state.titre==="")||(this.state.titre.length < 2)||!regex1.test(this.state.titre)) {
+    if ((this.state.titre==="")||(this.state.titre.length < 2)) {
 
       isError = true;
       errors.titreErr = "Veuillez verifier le Titre de l\'evenement";
@@ -194,6 +194,20 @@ class AjouterEvenement extends Component {
     this.setState((prevState) => { return { fadeIn: !prevState }});
   }
 
+  resetForm(){
+    this.setState({
+      ...this.state,
+      titre: "",
+      sujet: "",
+      ville: "",
+      adresse: "",
+      tel: "",
+      date: ""
+    });
+    // this.setState({file:[]});
+    // console.log("file", this.state.file);
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -282,8 +296,8 @@ class AjouterEvenement extends Component {
 
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary" onClick={this.handlesubmit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Button type="submit" color="primary" onClick={this.handlesubmit.bind(this)}><i className="fa fa-dot-circle-o"></i> Ajouter</Button>
+                <Button type="reset" color="danger" onClick={this.resetForm.bind(this)}><i className="fa fa-ban"></i> Reset</Button>
               </CardFooter>
               <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
                      className={'modal-warning ' + this.props.className}>

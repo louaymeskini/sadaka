@@ -28,32 +28,12 @@ class DefaultHeader extends Component {
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
 
-        <Nav className="d-md-down-none" navbar>
-          <NavItem className="px-3">
-            <Link to="/" className="nav-link" >Dashboard</Link>
-          </NavItem>
-          <NavItem className="px-3">
-            <Link to="/users">Users</Link>
-          </NavItem>
-          <NavItem className="px-3">
-            <NavLink href="#">Settings</NavLink>
-          </NavItem>
-        </Nav>
         <Nav className="ml-auto" navbar>
-          <NavItem className="d-md-down-none">
-            <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
-          </NavItem>
-          <NavItem className="d-md-down-none">
-            <NavLink href="#"><i className="icon-list"></i></NavLink>
-          </NavItem>
-          <NavItem className="d-md-down-none">
-            <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
-          </NavItem>
           <AppHeaderDropdown direction="down">
             {
               localStorage.getItem("type")==="admin" ?
                 <DropdownToggle nav>
-                  <img src={'../../assets/img/avatars/louay.jpg'} className="img-avatar" alt="louay.meskini@gmail.com" />
+                  <img src={'../../assets/img/avatars/sygnet.png'} className="img-avatar" alt="louay.meskini@gmail.com" />
                 </DropdownToggle>:null
             }
             { localStorage.getItem("type")==="association" ?
@@ -62,11 +42,11 @@ class DefaultHeader extends Component {
             </DropdownToggle>:null
             }
             <DropdownMenu right style={{ right: 'auto' }}>
-              <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
+              <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i>Déconnexion</DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>
         </Nav>
-        <AppAsideToggler className="d-md-down-none" />
+
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
       </React.Fragment>
     );

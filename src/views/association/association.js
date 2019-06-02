@@ -164,10 +164,10 @@ const headers={
                     <th>Ville</th>
                     <th>Adresse</th>
                     <th>Code Postale</th>
-                    <th>Telephone</th>
+                    <th>Téléphone</th>
                     <th>Email</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Remove</th>
+                    <th scope="col">Modifier</th>
+                    <th scope="col">Supprimer</th>
                   </tr>
                   </thead>
                   <tbody>

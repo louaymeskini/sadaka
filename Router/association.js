@@ -33,6 +33,22 @@ Router.get("/:id", validateUser, function (req, res) {
   })
 })
 
+//trouver un benevole dans tous associations
+//return liste des associations selon id de benevole bien determinee
+//search by sub documents ID
+Router.get("/trouver/benevole/:id", validateUser, function (req, res) {
+    associationModel.find({benevoles: req.params.id}).exec(function (errr, result) {
+            if (errr)
+                res.send({"state": "not ok", "msg": "err:" + errr});
+            else{
+                // if(isEmptyObject(result)){
+                //     result=JSON.stringify({"state":"vide", "msg":"aucune inscription trouvee pour ce benevole"});
+                // }
+                res.send(result);
+            }
+        })
+})
+
 // liste benevole d une seule association
 Router.get("/liste/benevole/:id", validateUser, function (req, res) {
   associationModel.find({_id: req.params.id}).select('benevoles').populate('benevoles').exec(function (errr, result) {
@@ -243,8 +259,8 @@ Router.put("/ajouter/:id/benevole/:idB",validateUser, function (req, res) {
       /*if (benevoleModel.associations === undefined){
       benevoleModel.associations = [];
       }*/
-        //benevoleModel.findOneAndUpdate({benevoles: req.params.idB}, {$push:{associations: req.params.id}})
-          //benevoleModel.associations.push(this.associationModel);
+        //benevoleModel.updateOne({_idB: req.params.idB}, {$push:{associations: req.params.id}})
+            //this.benevoles.associations.push(this.associations);
         //benevoleModel.save();
       //});
       res.send({"state": "ok", "msg": "ajouter benevole membre:"});
@@ -333,6 +349,16 @@ function validateUser(req, res, next) {
       next();
     }
   });
+}
+
+//check if res if empty
+function isEmptyObject(obj) {
+    for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 

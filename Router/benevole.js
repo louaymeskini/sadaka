@@ -36,6 +36,20 @@ Router.get("/:id", function (req,res) {
     })
 })
 
+//trouver une association dans tous benevoles
+Router.get("/trouver/association/:id", validateUser, function (req, res) {
+    benevoleModel.find({associations: req.params.id}).exec(function (errr, result) {
+        if (errr)
+            res.send({"state": "not ok", "msg": "err:" + errr});
+        else{
+            // if(isEmptyObject(result)){
+            //     result=JSON.stringify({"state":"vide", "msg":"aucune benevole trouvee pour cette association"});
+            // }
+            res.send(result);
+        }
+    })
+})
+
 // liste associations d une seul benevole
 Router.get("/liste/association/:id", validateUser, function (req, res) {
   benevoleModel.find({_id: req.params.id}).select('associations').populate('associations').exec(function (errr, result) {
@@ -58,7 +72,7 @@ Router.get("/liste/annonce/:id", validateUser, function (req, res) {
 
 // liste evenement d une seul benevole
 Router.get("/liste/evenement/:id", validateUser, function (req, res) {
-  benevoleModel.find({_id: req.params.id}).select('evenements').populate('evenements').exec(function (errr, result) {
+  benevoleModel.find({_id: req.params.id}).select('evenements').populate({path:'evenements', populate:{path:'association'}}).exec(function (errr, result) {
     if (errr)
       res.send({"state": "not ok", "msg": "err:" + errr});
     else
@@ -67,7 +81,7 @@ Router.get("/liste/evenement/:id", validateUser, function (req, res) {
 })
 
 //inscription benevole +
-Router.post("/ajouter",validateUser, function (req, res) {
+Router.post("/ajouter", function (req, res) {
     var benevole = new benevoleModel({
         nom: req.body.nom, prenom: req.body.prenom,
         sexe: req.body.sexe, ville: req.body.ville, adresse: req.body.adresse,
@@ -156,7 +170,7 @@ Router.put("/supprimer/:id/association/:idA",validateUser, function (req, res) {
 
 //add inscription association
 Router.put("/ajouter/:id/association/:idA",validateUser, function (req, res) {
-  benevoleModel.updateOne({_id: req.params.id}, {$push:{associations: req.params.idB}}, function (err) {
+  benevoleModel.updateOne({_id: req.params.id}, {$push:{associations: req.params.idA}}, function (err) {
     //associationModel.benevoles.pull({_id: req.params.id}, function (err) {
     if (err) {
       res.send({"state": "non", "msg": "err:" + err});
@@ -206,7 +220,7 @@ Router.put("/supprimer/:id/evenement/:idE",validateUser, function (req, res) {
 
 //add evenement of benevole
 Router.put("/ajouter/:id/evenement/:idE",validateUser, function (req, res) {
-  benevoleModel.update({_id: req.params.id}, {$push:{evenements: req.params.idE}}, function (err) {
+  benevoleModel.updateOne({_id: req.params.id}, {$push:{evenements: req.params.idE}}, function (err) {
     if (err) {
       res.send({"state": "non", "msg": "err:" + err});
     }
@@ -250,6 +264,16 @@ function validateUser(req, res, next) {
             next();
         }
     });
+}
+
+//check if res if empty
+function isEmptyObject(obj) {
+    for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 

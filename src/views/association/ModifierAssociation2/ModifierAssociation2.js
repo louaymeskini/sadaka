@@ -511,8 +511,8 @@ class ModifierAssociation2 extends Component {
                 </FormGroup>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary" onClick={this.handleEdit.bind(this)}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Button type="submit" color="primary" onClick={this.handleEdit.bind(this)}><i className="fa fa-dot-circle-o"></i> Modifier</Button>
+                <Button type="reset" color="danger"><i className="fa fa-ban"></i> Reset</Button>
                 <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
                        className={'modal-warning ' + this.props.className}>
                   <ModalHeader toggle={this.toggleWarning}>Erreur de modification</ModalHeader>

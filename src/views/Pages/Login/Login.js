@@ -127,7 +127,8 @@ class Login extends Component {
             this.setState(() => ({
               redirectToReferrer: "1"
             }))
-
+            const {redirectToReferrer} = this.state;
+            this.props.hettodo(redirectToReferrer);
           })
 
 
@@ -151,6 +152,8 @@ class Login extends Component {
             this.setState(() => ({
               redirectToReferrer: "2"
             }))
+            const {redirectToReferrer} = this.state;
+            this.props.hettodo(redirectToReferrer);
 
           })
 
@@ -168,7 +171,6 @@ class Login extends Component {
   }
 
   render() {
-    const {redirectToReferrer} = this.state;
 
     return (
       <div className="app flex-row align-items-center">
@@ -218,7 +220,6 @@ class Login extends Component {
                       <Row>
                         <Col xs="6">
                           <Button color="primary" className="px-4" onClick={() => {
-                            this.props.hettodo(redirectToReferrer);
                             this.login();
                           }}>Connecter</Button>
                         </Col>

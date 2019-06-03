@@ -78,7 +78,7 @@ const headers={
   "content-type":"application/json",
   'x-access-token':localStorage.getItem("token")
 }
-    fetch("http://localhost:8000/association/all", {method: 'GET',headers:headers })
+    fetch("https://sadaka.herokuapp.com/association/all", {method: 'GET',headers:headers })
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -93,7 +93,7 @@ const headers={
       "content-type":"application/json",
       "x-access-token":localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/supprimer/"+this.state.id, {method: 'DELETE', headers:headers})
+    fetch("https://sadaka.herokuapp.com/association/supprimer/"+this.state.id, {method: 'DELETE', headers:headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);

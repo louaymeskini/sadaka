@@ -53,7 +53,7 @@
     "react-scripts": "2.1.5"
   },
   "scripts": {
-    "heroku-postbuild": "npm install",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm run build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

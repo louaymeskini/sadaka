@@ -74,7 +74,7 @@ class AjouterAnnonce extends Component {
     const regexNum=/[0-9]+/g;
     const regexFile=/[^\\]*\.(\w+)$/
 
-    if ((this.state.titre==="")||(this.state.titre.length < 2)||!regexAdresse.test(this.state.titre)) {
+    if ((this.state.titre==="")||(this.state.titre.length < 2)) {
 
       isError = true;
       errors.titreErr = "Veuillez verifier le Titre de l\'Annonce";

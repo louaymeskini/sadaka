@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import config from '../../config/config';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 let prev  = 0;
 let next  = 0;
@@ -78,7 +79,7 @@ class benevole extends Component {
       "content-type":"application/json",
       'x-access-token':localStorage.getItem("token")
     }
-    fetch("http://localhost:8000/benevole/all", {method: 'GET',headers:headers })
+    fetch(config.baseUrl+"/benevole/all", {method: 'GET',headers:headers })
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -93,7 +94,7 @@ class benevole extends Component {
       "content-type":"application/json",
       "x-access-token":localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/benevole/supprimer/"+this.state.id, {method: 'DELETE', headers:headers})
+    fetch(config.baseUrl+"/benevole/supprimer/"+this.state.id, {method: 'DELETE', headers:headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);

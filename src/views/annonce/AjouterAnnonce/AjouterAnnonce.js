@@ -26,6 +26,7 @@ import {
   Row,
   Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
+import config from '../../../config/config';
 
 class AjouterAnnonce extends Component {
 
@@ -158,10 +159,10 @@ class AjouterAnnonce extends Component {
         formData.append("pieceJointe", this.state.file);
         formData.append("association", association);
 
-        axios.post("http://127.0.0.1:8000/annonce/ajouter", formData, {headers: headers})
+        axios.post(config.baseUrl+"/annonce/ajouter", formData, {headers: headers})
           .then(res => {
             console.log(res.data)
-            fetch("http://127.0.0.1:8000/association/ajouter/" + localStorage.getItem("idAssociation") + "/annonce/" + res.data._id, {
+            fetch(config.baseUrl+"/association/ajouter/" + localStorage.getItem("idAssociation") + "/annonce/" + res.data._id, {
               method: 'PUT',
               headers: headers
             })

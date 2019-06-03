@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import config from '../../../config/config';
 import {
   Badge,
   Button,
@@ -234,7 +235,7 @@ class ModifierAssociation extends Component {
       "content-type":"application/json",
       'x-access-token':localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/"+localStorage.getItem("idAssociationAdmin"), {method: 'GET', headers: headers})
+    fetch(config.baseUrl+"/association/"+localStorage.getItem("idAssociationAdmin"), {method: 'GET', headers: headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -316,7 +317,7 @@ class ModifierAssociation extends Component {
         }
 
 
-        fetch("http://127.0.0.1:8000/association/modifier/" + localStorage.getItem("idAssociationAdmin"), options)
+        fetch(config.baseUrl+"/association/modifier/" + localStorage.getItem("idAssociationAdmin"), options)
 
           .then(response => response.json())
 
@@ -341,7 +342,7 @@ class ModifierAssociation extends Component {
 
             if (this.state.file.name != "File") {
 
-              axios.put("http://127.0.0.1:8000/association/modifier/" + localStorage.getItem("idAssociationAdmin") + "/imageassociation", formData, config)
+              axios.put(config.baseUrl+"/association/modifier/" + localStorage.getItem("idAssociationAdmin") + "/imageassociation", formData, config)
 
                 .then(function (response) {
                   console.log('saved successfully')
@@ -385,7 +386,7 @@ class ModifierAssociation extends Component {
                   <Label htmlFor="imgAsso">Logo Association</Label>
                   <Row>
                   <Col xs="12" sm="3">
-                  <img src={'http://127.0.0.1:8000/association/img/'+this.state.imageAssociation} width="50" height="50"/>
+                  <img src={config.baseUrl+'/association/img/'+this.state.imageAssociation} width="50" height="50"/>
                   </Col>
                   <Col xs="12" sm="9">
 

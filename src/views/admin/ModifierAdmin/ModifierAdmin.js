@@ -26,6 +26,7 @@ import {
   Row,
   Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
+import config from '../../../config/config';
 
 class ModifierAdmin extends Component {
 
@@ -177,7 +178,7 @@ class ModifierAdmin extends Component {
       "content-type":"application/json",
       'x-access-token':localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/admin/"+localStorage.getItem("idAdmin"), {method: 'GET', headers: headers})
+    fetch(config.baseUrl+"/admin/"+localStorage.getItem("idAdmin"), {method: 'GET', headers: headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -218,7 +219,7 @@ class ModifierAdmin extends Component {
         const username = this.state.username;
         const password = this.state.password;
         const data = {nom, prenom, password, username, email}
-        axios.put("http://127.0.0.1:8000/admin/modifier/" + localStorage.getItem("idAdmin"), data, {headers: headers}).then(res => {
+        axios.put(config.baseUrl+"/admin/modifier/" + localStorage.getItem("idAdmin"), data, {headers: headers}).then(res => {
           console.log(res.data)
           // if(res.data === ""){
           //   alert("Vous devez remplissez tous les champs")

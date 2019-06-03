@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import config from '../../config/config':
 import {
   Badge,
   Card,
@@ -101,7 +102,7 @@ class benevoleMembre extends Component {
       "content-type": "application/json",
       'x-access-token': localStorage.getItem("token")
     }
-    fetch("http://localhost:8000/benevole/trouver/association/" + localStorage.getItem("idAssociation"), {
+    fetch(config.baseUrl+"/benevole/trouver/association/" + localStorage.getItem("idAssociation"), {
       method: 'GET',
       headers: headers
     })
@@ -109,7 +110,7 @@ class benevoleMembre extends Component {
       .then(data => {
         console.log("association: ", data);
         console.log("id bene: ", data[0]);
-        fetch("http://localhost:8000/association/" + localStorage.getItem("idAssociation"), {
+        fetch(config.baseUrl+"/association/" + localStorage.getItem("idAssociation"), {
           method: 'GET',
           headers: headers
         })
@@ -153,7 +154,7 @@ class benevoleMembre extends Component {
       "content-type": "application/json",
       "x-access-token": localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/supprimer/" + localStorage.getItem("idAssociation") + "/benevole/" + this.state.id, {
+    fetch(config.baseUrl+"/association/supprimer/" + localStorage.getItem("idAssociation") + "/benevole/" + this.state.id, {
       method: 'PUT',
       headers: headers
     })
@@ -179,14 +180,14 @@ class benevoleMembre extends Component {
       "content-type": "application/json",
       "x-access-token": localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/association/supprimer/"+localStorage.getItem("idAssociation") + "/benevole/" + this.state.id, {
+    fetch(config.baseUrl+"/association/supprimer/"+localStorage.getItem("idAssociation") + "/benevole/" + this.state.id, {
       method: 'PUT',
       headers: headers
     })
       .then(response => response.json())
       .then(data1 => {
         console.log(data1);
-        fetch("http://127.0.0.1:8000/benevole/supprimer/"+this.state.id +"/association/"+localStorage.getItem("idAssociation"), {
+        fetch(config.baseUrl+"/benevole/supprimer/"+this.state.id +"/association/"+localStorage.getItem("idAssociation"), {
           method: 'PUT',
           headers: headers
         })
@@ -211,7 +212,7 @@ class benevoleMembre extends Component {
       "content-type": "application/json",
       'x-access-token': localStorage.getItem("token")
     }
-    fetch("http://localhost:8000/association/ajouter/" + localStorage.getItem("idAssociation") + "/benevole/" + id, {
+    fetch(config.baseUrl+"/association/ajouter/" + localStorage.getItem("idAssociation") + "/benevole/" + id, {
       method: 'PUT',
       headers: headers
     })

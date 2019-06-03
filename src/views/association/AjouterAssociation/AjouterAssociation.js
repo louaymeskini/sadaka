@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import config from '../../../config/config';
 import {
   Badge,
   Button,
@@ -220,7 +221,7 @@ console.log("okkkkkkk");
         formData.append("username", username);
         formData.append("password", password);
 
-        axios.post("http://127.0.0.1:8000/association/ajouter", formData, {headers: headers})
+        axios.post(config.baseUrl+"/association/ajouter", formData, {headers: headers})
           .then(res => {
             console.log(res.data)
 

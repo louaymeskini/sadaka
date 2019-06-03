@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import config from '../../../config/config';
 import {
   Badge,
   Button,
@@ -166,10 +167,10 @@ class AjouterEvenement extends Component {
         const association = localStorage.getItem("idAssociation");
         const data = {titre, sujet, ville, adresse, date, association}
 
-        axios.post("http://127.0.0.1:8000/evenement/ajouter", data, {headers: headers})
+        axios.post(config.baseUrl+"/evenement/ajouter", data, {headers: headers})
           .then(res => {
             console.log(res.data)
-            fetch("http://127.0.0.1:8000/association/ajouter/" + localStorage.getItem("idAssociation") + "/evenement/" + res.data._id, {
+            fetch(config.baseUrl+"/association/ajouter/" + localStorage.getItem("idAssociation") + "/evenement/" + res.data._id, {
               method: 'PUT',
               headers: headers
             })

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import config from '../../config/config';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 import axios from "axios/index";
 let prev  = 0;
@@ -80,7 +81,7 @@ const headers={
   "content-type":"application/json",
   'x-access-token':localStorage.getItem("token")
 }
-    fetch("http://localhost:8000/association/liste/evenement/"+localStorage.getItem("idAssociation"), {method: 'GET',headers:headers })
+    fetch(config.baseUrl+"/association/liste/evenement/"+localStorage.getItem("idAssociation"), {method: 'GET',headers:headers })
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -104,10 +105,10 @@ const headers={
       "x-access-token":localStorage.getItem("token")
     }
 
-    axios.delete("http://127.0.0.1:8000/evenement/supprimer/"+this.state.id,{headers: headers})
+    axios.delete(config.baseUrl+"/evenement/supprimer/"+this.state.id,{headers: headers})
       .then(res=> {
         console.log(res.data)
-        fetch("http://127.0.0.1:8000/association/supprimer/"+localStorage.getItem("idAssociation")+"/evenement/"+this.state.id, {method: 'PUT', headers:headers})
+        fetch(config.baseUrl+"/association/supprimer/"+localStorage.getItem("idAssociation")+"/evenement/"+this.state.id, {method: 'PUT', headers:headers})
           .then(response => response.json())
           .then(data => {
             console.log(data);

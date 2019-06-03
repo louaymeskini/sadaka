@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import config from '../../../config/config';
 import {
   Badge,
   Button,
@@ -209,7 +210,7 @@ handleChangeGenre(evt){
       "content-type":"application/json",
       'x-access-token':localStorage.getItem("token")
     }
-    fetch("http://127.0.0.1:8000/benevole/"+localStorage.getItem("idBenevole"), {method: 'GET', headers: headers})
+    fetch(config.baseUrl+"/benevole/"+localStorage.getItem("idBenevole"), {method: 'GET', headers: headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -278,7 +279,7 @@ handleChangeGenre(evt){
         }
 
         console.log("else")
-        axios.put("http://127.0.0.1:8000/benevole/modifier/" + localStorage.getItem("idBenevole"), {
+        axios.put(config.baseUrl+"/benevole/modifier/" + localStorage.getItem("idBenevole"), {
           nom: this.state.nom,
           prenom: this.state.prenom,
           sexe: this.state.sexe,

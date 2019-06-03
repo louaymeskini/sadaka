@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import logo from '../../assets/img/brand/logo.png'
 import sygnet from '../../assets/img/brand/sygnet.png'
+import config from '../../config/config';
 
 const propTypes = {
   children: PropTypes.node,
@@ -38,7 +39,7 @@ class DefaultHeader extends Component {
             }
             { localStorage.getItem("type")==="association" ?
             <DropdownToggle nav>
-              <img src={'http://127.0.0.1:8000/association/img/'+localStorage.getItem("imageAssociation")} className="img-avatar" alt={localStorage.getItem("imageAssociation")} />
+              <img src={config.baseUrl+'/association/img/'+localStorage.getItem("imageAssociation")} className="img-avatar" alt={localStorage.getItem("imageAssociation")} />
             </DropdownToggle>:null
             }
             <DropdownMenu right style={{ right: 'auto' }}>

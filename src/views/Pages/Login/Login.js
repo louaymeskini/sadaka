@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row ,FormText, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import  axios from 'axios';
+import config from '../../../config/config';
 
 ////session
 const fakeAuth = {
@@ -94,7 +95,7 @@ class Login extends Component {
     let err=this.validate();
 
     if(!err){
-      axios.post("https://sadaka.herokuapp.com/auth", {
+      axios.post(config.baseUrl+"/auth", {
         email:this.state.email,
         password:this.state.password
       }).then(res=>{

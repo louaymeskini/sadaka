@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import config from '../../config/config';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 let prev  = 0;
 let next  = 0;
@@ -78,7 +79,7 @@ const headers={
   "content-type":"application/json",
   'x-access-token':localStorage.getItem("token")
 }
-    fetch("https://sadaka.herokuapp.com/association/all", {method: 'GET',headers:headers })
+    fetch(config.baseUrl+"/association/all", {method: 'GET',headers:headers })
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -93,7 +94,7 @@ const headers={
       "content-type":"application/json",
       "x-access-token":localStorage.getItem("token")
     }
-    fetch("https://sadaka.herokuapp.com/association/supprimer/"+this.state.id, {method: 'DELETE', headers:headers})
+    fetch(config.baseUrl+"/association/supprimer/"+this.state.id, {method: 'DELETE', headers:headers})
       .then(response => response.json())
       .then(data =>{
         console.log(data);
@@ -178,7 +179,7 @@ const headers={
                       return(
 
                         <tr key={index}>
-                    <td><img src={'http://127.0.0.1:8000/association/img/'+item.imageAssociation} width="50" height="50"/></td>
+                    <td><img src={config.baseUrl+'/association/img/'+item.imageAssociation} width="50" height="50"/></td>
                     <td>{item.nom}</td>
                     <td>{item.ville}</td>
                     <td>{item.adresse}</td>

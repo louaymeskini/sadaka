@@ -32,6 +32,22 @@ Router.get("/:id", function (req,res) {
     })
 })
 
+//trouver un benevole dans tous associations
+//return liste des associations selon id de benevole bien determinee
+//search by sub documents ID
+Router.get("/trouver/association/:id", validateUser, function (req, res) {
+    annonceModel.find({association: req.params.id}).populate('association').exec(function (errr, result) {
+        if (errr)
+            res.send({"state": "not ok", "msg": "err:" + errr});
+        else{
+            // if(isEmptyObject(result)){
+            //     result=JSON.stringify({"state":"vide", "msg":"aucune inscription trouvee pour ce benevole"});
+            // }
+            res.send(result);
+        }
+    })
+})
+
 // une seule piece jointe
 Router.get("/fichier/:pieceJointe", function (req, res) {
   res.sendFile(__dirname + '/uploads/pieceJointe'+req.params.pieceJointe);
